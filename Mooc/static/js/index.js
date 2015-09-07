@@ -1,0 +1,10 @@
+$(document).ready(function(){
+        $("#showkc").click(function(){
+          $("#home").hide();
+          $("#kc").show();
+        });
+        $("#showhome").click(function(){
+          $("#kc").hide();
+          $("#home").show();
+        });
+      });

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>个人主页</title>
+
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/css/personal.css" rel="stylesheet">
+    <script src="../../static/js/ie-emulation-modes-warning.js"></script>
+
+  </head>
+  <body>
+    <!--导航栏
+    ==================================================-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">KitchenAir.MOOC</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#">课程</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">柠檬冰茶 <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#personal">个人主页</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">关于我们</a></li>
+                <li><a href="#">退出</a></li>
+              </ul>
+            </li>
+            <li><img class="img-circle" src="../../static/img/face.jpg" alt="image" width="40" height="40"></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="想看啥搜啥">
+          </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <!--主体-->
+    <div class="container-fluid">
+      <div class="row">
+        <!--左侧
+        ======================================-->
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar placeholders">
+            <li><img class="img-circle" src="../../static/img/face.jpg" alt="image" width="140" height="140"></li>
+            <li>柠檬冰茶</li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">我的课程 <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">我的学习资料</a></li>
+            <li><a href="">个人信息</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="">还有啥</a></li>
+          </ul>
+        </div>
+        <!--右侧
+        ===================================================================-->
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">我的课程</h1>
+
+          <div class="row placeholders">
+            <div>
+              <img class="img-circle" src="../../static/img/K2.jpg" alt="Generic placeholder image" width="140" height="140">
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                  60%
+                </div>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="../../static/js/jquery/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../../static/js/bootstrap.min.js"></script>
+  </body>
+</html>

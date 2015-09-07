@@ -1,0 +1,27 @@
+body {
+  min-height: 800px;
+  padding-top: 50px;
+  padding-bottom: 40px;
+  font-family: "微软雅黑";
+  color: #5a5a5a;
+}
+
+.mycontainer {
+	padding-top: 40px;
+}
+.mycontainer .myleft {
+	width: 65%;
+}
+.mycontainer .myright {
+	width: 35%;
+}
+.panel-body p {
+	text-indent:2em;
+	margin: 20px;
+}
+.text_center {
+	text-align: center;
+}
+.myh3 {
+	font-size: 20px;
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>课程主页</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+    <link href="../static/css/course_index.css" rel="stylesheet">
+</head>
+<body>
+<!-- 导航栏
+================================================== -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/" id="showhome">KitchenAir.MOOC</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="showkc"><a href="/">课程</a></li>
+                <!--  待修改 此处应该定位到course_list之类的地方  -->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user %}
+                    <p class="navbar-collapse navbar-text  navbar-right">Welcome,
+                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }} </a>
+                        <a href="/logout" class="navbar-link bg-danger">Exit</a>
+                    </p>
+                {% else %}
+                    <div class="navbar-collapse navbar-right">
+                        <a href="/login">
+                            <button class="btn btn-primary navbar-btn">Sign in</button>
+                        </a>
+                        <a href="/register">
+                            <button class="btn btn-default navbar-btn">Register</button>
+                        </a>
+                    </div>
+                {% endif %}
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            </form>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<!-- 主体
+======================================================= -->
+<div class="container mycontainer">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <!-- 左侧
+        ===================================================== -->
+        <div class="col-xs-12 col-sm-9 myleft">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>{{ course.name }}</h1>
+                    <hr class="featurette-divider">
+                    <h3>课程简介：</h3>
+
+                    <p>{{ course.summary }}翻转课堂译自“Flipped Classroom”或“Inverted
+                        Classroom”，是指重新调整课堂内外的时间，将学习的决定权从教师转移给学生。在这种教学模式下，课堂内的宝贵时间，学生能够更专注于主动的基于项目的学习，共同研究解决本地化或全球化的挑战以及其他现实世界面临的问题，从而获得更深层次的理解。教师不再占用课堂的时间来讲授信息，这些信息需要学生在课后完成自主学习，他们可以看视频讲座、听播客、阅读功能增强的电子书，还能在网络上与别的同学讨论，能在任何时候去查阅需要的材料。教师也能有更多的时间与每个人交流。在课后，学生自主规划学习内容、学习节奏、风格和呈现知识的方式，教师则采用讲授法和协作法来满足学生的需要和促成他们的个性化学习，其目标是为了让学生通过实践获得更真实的学习。翻转课堂模式是大教育运动的一部分，它与混合式学习、探究性学习、其他教学方法和工具在含义上有所重叠，都是为了让学习更加灵活、主动，让学生的参与度更强。互联网时代，学生通过互联网学习丰富的在线课程，不必一定要到学校接受教师讲授。互联网尤其是移动互联网催生“翻转课堂式”教学模式。“翻转课堂式”是对基于印刷术的传统课堂教学结构与教学流程的彻底颠覆，由此将引发教师角色、课程模式、管理模式等一系列变革。</p>
+
+                    <h3>课程单元：</h3>
+                    {% for unit in units %}
+                        <p>{{ unit.title }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- 右侧
+        ===================================================== -->
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas myright">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <img src="../static/img/K2.jpg" alt="Generic placeholder image" width="350" height="350">
+
+                    <h2 class="text_center">刘保东</h2>
+
+                    <h3 class="text_center">课程时长：8周</h3>
+                    {% if times %}
+                        <div class="text_center">
+                            <span class="myh3">选择课程时间：</span>
+                            <select id="time_list">
+                                {% for time in times %}
+                                    <option value={{ time.id }}>{{ time.begin_time }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <script language="javascript">
+                            function check() {
+                                var select = document.getElementById("time_list");
+                                var index=select.selectedIndex;
+                                //alert(index);
+                                var value = select.options[index].value;
+                                //alert(value);
+                                var a = document.getElementById("click_button");
+                                a.href='/take_course/?cid={{ course.id }}&tid='+value;
+                            }
+                        </script>
+                    {% endif %}
+                    <!--
+                    <div class="text_center">
+                        <span class="myh3">选择课程时间：</span>
+                        <select>
+                            <option>2015.3.15--2015.6.15</option>
+                            <option>2015.7.5--2015.10.5</option>
+                            <option>2015.11.15--2016.2.15</option>
+                        </select>
+                    </div>
+                    <br>
+                    -->
+                    {% if click %}
+                        {% if studystatus %}
+                            <div class="text_center"><a class="btn btn-lg btn-success"
+                                                        href='/study?course_id={{ course.id }}'
+                                                        role="button">{{ message }}</a></div>
+                        {% else %}
+                            <div class="text_center"><a id='click_button' class="btn btn-lg btn-success"
+                                                        href='///'
+                                                        onclick="check()"
+                                                        role="button">{{ message }}</a></div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text_center"><span class="btn btn-lg btn-success" role="button"
+                                                       disabled="disabled">{{ message }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="featurette-divider">
+</div>
+<!-- <label>{{ course.name }}</label><br>
+    <label>{{ course.summary }}</label><br>
+    {% for unit in units %}
+        <label>{{ unit.counter }}{{ unit.title }}</label><br>
+    {% endfor %} -->
+
+<!-- FOOT
+=========================================================== -->
+<footer class="container marketing">
+    <p class="pull-right"><a href="#">顶~飞回顶部~</a></p>
+
+    <p>&copy; 2015 Kitchen Air &middot; <a href="#">友情链接</a> &middot; <a href="#">关于我们</a></p>
+</footer>
+
+<!-- script
+=========================================================== -->
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

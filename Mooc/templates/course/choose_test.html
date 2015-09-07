@@ -1,0 +1,44 @@
+<html>
+    <head></head>
+    <body>
+        {{ course.name }}<br>
+        {% for unit,items in units %}
+            <p>{{ unit.counter }} {{ unit.title}}</p><br>
+            <p>截止时间:{{ unit.test.last_time }}</p><br>
+            <p>有效次数:{{ items|length }} / {{ unit.test.max_submit_times }}</p><br>
+            <table border="1">
+                <tr>
+                    <td>次数</td>
+                    <td>提交日期</td>
+                    <td>分数</td>
+                    <td>操作</td>
+                </tr>
+            {% for item in items %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.submit_time }}</td>
+                <td>{{ item.score }}</td>
+                <td><a href="/test/{{ course_id}}/{{ unit.counter }}/{{ forloop.counter }}"/>Check</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                <td>1</td>
+                <td>None</td>
+                <td>None</td>
+                <td><a href="/test/{{ course_id}}/{{ unit.counter }}/{{ items|length|add:1 }}"/>Test</a></td>
+                </tr>
+            {% endfor %}
+            {% ifnotequal  items|length  unit.test.max_submit_times %}
+                {% ifnotequal items|length 0 %}
+                    <tr>
+                    <td>{{ items|length|add:1 }}</td>
+                    <td>{{ None }}</td>
+                    <td>{{ None }}</td>
+                    <td><a href="/test/{{ course_id}}/{{ unit.counter }}/{{ items|length|add:1 }}"/>Test</a></td>
+                    </tr>
+                {% endifnotequal%}
+            {% endifnotequal%}
+            </table>
+        {% endfor %}
+    </body>
+</html>

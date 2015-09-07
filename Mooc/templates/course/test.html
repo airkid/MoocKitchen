@@ -1,0 +1,57 @@
+<html>
+    <head><title>单元测试</title></head>
+    <body>
+        <form action="./{{ test_counter }}" method="post">
+            <!-- /test/{{course_id}}/{{unit_cnt}}/{{test_counter}}" -->
+            {% csrf_token %}
+            {% for question in Questions%}
+                <label>
+                    {% if question.title%} {{ question.title }} {% endif%}
+                    {% if question.image %} <img src="{{ question.image }}" alt=' question ' /> {% endif %}
+                    This question's score is {{ question.question_score }}
+                </label><br/>
+                {% ifequal question.question_type '0'%}
+                    <input type="radio" value="T" name="judge{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                    {% ifequal question.user_answer 'T' %} checked {% endifequal %}>T <br/>
+                    <input type="radio" value="F" name="judge{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                    {% ifequal question.user_answer 'F' %} checked {% endifequal %}>F <br/>
+
+                    {% if Answer %}The right answer is {{question.answer}}.Your answer is {{ question.user_answer }}
+                    {% ifequal question.user_answer question.answer %}
+                        You are right
+                    {% else %}
+                        You are wrong
+                    {% endifequal %}
+                    {% endif %}
+                {% else %}
+                    {% ifequal question.question_type '1' %}
+                        <input type="radio" value="A" name="option{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                        {% ifequal question.user_answer 'A' %} checked {% endifequal %}>A.{{question.option_a }}<br/>
+                        <input type="radio" value="B" name="option{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                        {% ifequal question.user_answer 'B' %} checked {% endifequal %}>B.{{question.option_b }}<br/>
+                        <input type="radio" value="C" name="option{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                        {% ifequal question.user_answer 'C' %} checked {% endifequal %}>C.{{question.option_c }}<br/>
+                        <input type="radio" value="D" name="option{{forloop.counter0}}" {% if Answer %} disabled {% endif %}
+                        {% ifequal question.user_answer 'D' %} checked {% endifequal %}>D.{{question.option_d }}<br/>
+                        {% if Answer %}
+                        The right answer is {{question.answer}}.Your answer is {{ question.user_answer }}
+                        {% ifequal question.user_answer question.answer %}
+                        You are right
+                        {% else %}
+                        You are wrong
+                        {% endifequal %}
+                        {% endif %}
+                    {% endifequal %}
+                {% endifequal %}
+                <br>
+            {% endfor %}
+            {% if Answer%}
+                Your score is {{ TestScore }}
+            {% endif %}
+
+            {% if not Answer %}
+                <input type="submit" name='input_type' value="Submit Answer">
+            {% endif %}
+        </form>
+    </body>
+</html>

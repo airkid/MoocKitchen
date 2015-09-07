@@ -1,0 +1,23 @@
+.quiz {
+    margin-left:auto;
+    margin-right:auto;
+}
+.fixed {
+     position: fixed;
+     bottom: 0;
+     right: 30px;
+     left: 30px;
+     background-color: white;
+ }
+.clock {
+    font-family: Î¢ÈíÑÅºÚ;
+    font-size: 200%;
+    font-weight: bold;
+}
+.myBox1 {
+    margin-top: 100px;
+}
+.myBox2 {
+    padding-left: 100px;
+    padding-right: 100px;
+}

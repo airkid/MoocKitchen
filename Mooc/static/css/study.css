@@ -1,0 +1,17 @@
+body {
+  min-height: 1000px;
+  padding-top: 50px;
+  padding-bottom: 40px;
+  font-family: "微软雅黑";
+  color: #5a5a5a;
+}
+
+.mycontainer {
+	padding-top: 40px;
+}
+.myleft {
+	width: 75%;
+}
+.myright {
+	width: 25%;
+}

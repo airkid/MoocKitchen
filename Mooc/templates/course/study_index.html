@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>测试入口</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Iconos -->
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css" media="screen" type="text/css">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+    <script src="../static/js/jquery/jquery.min.js"></script>
+    <link href="../static/css/study.css" rel="stylesheet">
+    <link href="../static/css/quiz.css" rel="stylesheet">
+    <link href="../static/css/te_in.css" rel="stylesheet">
+    <script src="../static/js/te_in.js"></script>
+</head>
+<body>
+<!-- 导航栏
+================================================== -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="showkc"><a href="/">课程</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- {% if user %} -->
+                    <p class="navbar-collapse navbar-text  navbar-right">Welcome,
+                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
+                        <a href="/logout" class="navbar-link bg-danger">Exit</a>
+                    </p>
+                    <!-- {% else %} -->
+                    <div class="navbar-collapse navbar-right">
+                        <a href="/login">
+                            <button class="btn btn-primary navbar-btn">Sign in</button>
+                        </a>
+                        <a href="/register">
+                            <button class="btn btn-default navbar-btn">Register</button>
+                        </a>
+                    </div>
+                    <!-- {% endif %} -->
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            </form>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<!-- 主体部分
+==========================================================-->
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧
+        ======================================-->
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar placeholders">
+                <li><img src="../static/img/FZKT.png" alt="image" width="180" height="120"></li>
+                <li><h2>{{ course.name }}</h2></li>
+                <li><h4>刘保东</h4></li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li id="show_news" class="active"><a href="#"><span class="glyphicon glyphicon-bullhorn"
+                                                                    aria-hidden="true"></span>公告</a></li>
+                <li id="show_test"><a href="#"><span class="glyphicon glyphicon-time"
+                                                     aria-hidden="true"></span>作业与测试</a></li>
+                <li id="show_ppt"><a href="#"><span class="glyphicon glyphicon-paperclip"
+                                                    aria-hidden="true"></span>课件</a></li>
+                <li id="show_talk"><a href="#"><span class="glyphicon glyphicon-comment"
+                                                     aria-hidden="true"></span>讨论区</a></li>
+            </ul>
+        </div>
+        <!-- end左侧 -->
+        <!-- 右侧
+        ===================================================================-->
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main mymain">
+            <!--======================公告==============================-->
+            <div id="news">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>欢迎回来，亲爱的 {{ userinfo.nickname }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <h4>您上一次学习到 <span class="blue">{{ last_section.title }}</span></h4>
+
+                        <div class="text_center right"><a class="btn btn-lg btn-primary"
+                        href="/study/?cid={{ course.id }}&unit_cnt={{ next_section.unit.counter }}&section_cnt={{ next_section.counter }}" role="button">继续学习</a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <h3>课程最新公告</h3>
+                <hr>
+                <p>{{ course.announcement }}</p>
+            </div>
+            <!--=====================作业与测试=========================-->
+            <div id="test">
+                <ul id="accordion" class="accordion inmyBox1">
+                    {% for unit,items in units %}
+                        <li>
+                            <div class="link"><i class="fa fa-paint-brush"></i>{{ unit.title }}<i style="left: 700px; top: 0px">
+                            {% ifequal items|length unit.test.max_submit_times.numerator %}
+                                    <a href="#">
+                                    <button class="btn btn-primary navbar-btn">已经完成</button>
+                                    </a>
+                            {% else %}
+                                    <a href="/test/{{ course.id }}/{{ unit.counter }}/0">
+                                    <button class="btn btn-primary navbar-btn">进入测试</button>
+                                    </a>
+                            {% endifequal %}
+                            &nbsp;&nbsp;&nbsp;&nbsp;{{ items | length }} / {{ unit.test.max_submit_times }}
+                                </i><i class="fa fa-chevron-down"></i></div>
+                            <ul class="submenu">
+                                <li><a href="#">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">截至时间</div>
+                                        <div class="col-md-8">{{ unit.last_time }}<br>请务必在截止时间之前提交，截止时间后提交不再计分</div>
+                                    </div>
+                                </a></li>
+                                <li><a href="#">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">有效分数</div>
+                                        <div class="col-md-8">Error<br>你的每一次测验系统都将为你计分，并提取最高得分作为你的有效分数</div>
+                                    </div>
+                                </a></li>
+                                {% for item in items %}
+                                    <li><a href="/test/{{ course.id }}/{{ unit.counter }}/{{ forloop.counter }}">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">提交记录</div>
+                                            <div class="col-md-2">第{{ forloop.counter }}次</div>
+                                            <div class="col-md-2">提交时间：{{ item.submit_time }}</div>
+                                            <div class="col-md-2">分数：{{ item.score }}</div>
+                                        </div>
+                                    </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!--======================课件==============================-->
+            <div id="ppt">
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+                <div class="one">
+                    <div class="ppt_name left"><span class="glyphicon glyphicon-file"></span> 第一单元第一个section的pdf</div>
+                    <div class="text_center right"><a class="btn btn-success" href="#" role="button">点击下载</a></div>
+                </div>
+                <br>
+                <hr>
+            </div>
+            <!--======================讨论区============================-->
+            <div id="talk">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOT
+=========================================================== -->
+<!-- <footer class="container marketing">
+  <p class="pull-right"><a href="#">顶~飞回顶部~</a></p>
+  <p>&copy; 2015 Kitchen Air &middot; <a href="#">友情链接</a> &middot; <a href="#">关于我们</a></p>
+</footer> -->
+
+<!-- script
+=========================================================== -->
+<script src="../static/js//index1.js"></script>
+</body>
+</html>

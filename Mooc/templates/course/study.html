@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>学习主页</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+    <link href="../static/css/study.css" rel="stylesheet">
+</head>
+<body>
+<!-- 导航栏
+================================================== -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/" id="showhome">KitchenAir.MOOC</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="showkc"><a href="/">课程</a></li>
+                <!--  待修改 此处应该定位到course_list之类的地方  -->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user %}
+                    <p class="navbar-collapse navbar-text  navbar-right">Welcome,
+                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }} </a>
+                        <a href="/logout" class="navbar-link bg-danger">Exit</a>
+                    </p>
+                {% else %}
+                    <div class="navbar-collapse navbar-right">
+                        <a href="/login">
+                            <button class="btn btn-primary navbar-btn">Sign in</button>
+                        </a>
+                        <a href="/register">
+                            <button class="btn btn-default navbar-btn">Register</button>
+                        </a>
+                    </div>
+                {% endif %}
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            </form>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<!-- 主体
+======================================================= -->
+<div class="container mycontainer">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <!-- 左边
+        =================================================== -->
+        <div class="col-xs-12 col-sm-9 myleft">
+            <h2>{{ section.title }}</h2>
+            <video width="800" height="500" controls="controls">
+                <source src='../{{ video }}' type="video/mp4">
+            </video>
+        </div>
+        <div>
+            <br>
+            <button id="prev">Previous</button>
+            <button id="next">Next</button>
+            &nbsp; &nbsp;
+            <span>Page: <span id="page_num">1</span> / <span id="page_count">14</span></span>
+        </div>
+
+        <div>
+            <canvas id="the-canvas" style="border:1px solid black" height="633" width="489"></canvas>
+        </div>
+
+        <!-- for legacy browsers add compatibility.js -->
+        <!--<script src="../compatibility.js"></script>-->
+
+        <script src="../static/js/pdf.js"></script>
+
+        <script id="script">
+            //
+            // If absolute URL from the remote server is provided, configure the CORS
+            // header on that server.
+            //
+            //PDFJS.workerSrc = 'pdf.js';
+            var url = '../{{ pdf }}';
+
+
+            //
+            // Disable workers to avoid yet another cross-origin issue (workers need
+            // the URL of the script to be loaded, and dynamically loading a cross-origin
+            // script does not work).
+            //
+            // PDFJS.disableWorker = true;
+
+            //
+            // In cases when the pdf.worker.js is located at the different folder than the
+            // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
+            // shall be specified.
+            //
+            PDFJS.workerSrc = '../static/js/pdf.worker.js';
+
+            var pdfDoc = null,
+                    pageNum = 1,
+                    pageRendering = false,
+                    pageNumPending = null,
+                    scale = 0.8,
+                    canvas = document.getElementById('the-canvas'),
+                    ctx = canvas.getContext('2d');
+
+            /**
+             * Get page info from document, resize canvas accordingly, and render page.
+             * @param num Page number.
+             */
+            function renderPage(num) {
+                pageRendering = true;
+                // Using promise to fetch the page
+                pdfDoc.getPage(num).then(function (page) {
+                    var viewport = page.getViewport(scale);
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    // Render PDF page into canvas context
+                    var renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    var renderTask = page.render(renderContext);
+
+                    // Wait for rendering to finish
+                    renderTask.promise.then(function () {
+                        pageRendering = false;
+                        if (pageNumPending !== null) {
+                            // New page rendering is pending
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                });
+
+                // Update page counters
+                document.getElementById('page_num').textContent = pageNum;
+            }
+
+            /**
+             * If another page rendering in progress, waits until the rendering is
+             * finised. Otherwise, executes rendering immediately.
+             */
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+
+            /**
+             * Displays previous page.
+             */
+            function onPrevPage() {
+                if (pageNum <= 1) {
+                    return;
+                }
+                pageNum--;
+                queueRenderPage(pageNum);
+            }
+            document.getElementById('prev').addEventListener('click', onPrevPage);
+
+            /**
+             * Displays next page.
+             */
+            function onNextPage() {
+                if (pageNum >= pdfDoc.numPages) {
+                    return;
+                }
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+            document.getElementById('next').addEventListener('click', onNextPage);
+
+            /**
+             * Asynchronously downloads PDF.
+             */
+            PDFJS.getDocument(url).then(function (pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page_count').textContent = pdfDoc.numPages;
+
+                // Initial/first page rendering
+                renderPage(pageNum);
+            });
+        </script>
+
+        <!-- 右边
+        =================================================== -->
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas myright">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% for unit in units %}
+                        <label>{{ unit.title }}</label><br>
+                        {% if unit.counter <= obj_unit.counter %}
+                            {% for sec in unit.sections.all %}
+                                <a href='/study/?course_id={{ course.id }}&unit_cnt={{ unit.counter }}&section_cnt={{ sec.counter }}'>{{ sec.title }}</a>
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            {% for sec in unit.sections.all %}
+                                <label>{{ sec.title }}</label>
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="featurette-divider">
+</div>
+
+
+<!-- {% for unit in course.units.all %}
+    <label>unit.title</label><br>>
+    {% for section in unit.sections.all %}
+        <a href="/study/?cid={{ course.id }}&ucnt={{ unit.counter }}&scnt={{ section.counter }}">section:
+    {{ section.counter }}</a>
+    {% endfor %}
+{% endfor %}
+<object data='../{{ video }}' height="200" width="200"/> -->
+
+<!-- FOOT
+=========================================================== -->
+<footer class="container marketing">
+    <p class="pull-right"><a href="#">顶~飞回顶部~</a></p>
+
+    <p>&copy; 2015 Kitchen Air &middot; <a href="#">友情链接</a> &middot; <a href="#">关于我们</a></p>
+</footer>
+
+<!-- script
+=========================================================== -->
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

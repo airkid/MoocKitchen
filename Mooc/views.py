@@ -103,11 +103,13 @@ def register(request):
 
 @login_required
 def course_summary(request, cid):
-    try:
-        servertime = datetime.datetime.now()
+    # try:
+    if True:
+        servertime = datetime.date.today()
         course = Course.objects.get(id=cid)
         units = course.units.all().order_by('counter')
-        begintime = course.cur_time.begin_time.replace(tzinfo=None)
+        unit_sum = len(units)
+        begintime = course.cur_time.begin_time  # .replace(tzinfo=None)
         time_list = course.times.all().order_by('begin_time')
         # total_hour是一门课总共需要的小时数
         total_days = 0
@@ -120,7 +122,7 @@ def course_summary(request, cid):
             old_time.cur_course = None
             old_time.save()
             for t in time_list:
-                delta = int((servertime - t.begin_time.replace(tzinfo=None)).days)
+                delta = int((servertime - t.begin_time).days)
                 if delta <= total_days:
                     t.cur_course = course
                     t.save()
@@ -130,52 +132,65 @@ def course_summary(request, cid):
             click = False
             message = u'暂无课程安排'
             return ren2res('./course/course_index.html', request,
-                           {'click': click, 'course': course, 'units': units, 'message': message})
-    except Exception:
-        raise Http404
+                           {'click': click, 'course': course, 'units': units, 'message': message, 'unit_sum': unit_sum})
+    # except Exception:
+    # raise Http404
     if course is not None:
         result = StudyStatus.objects.filter(course=course, user=request.user)
-        course_begintime = course.cur_time.begin_time.replace(tzinfo=None)
+        course_begintime = course.cur_time.begin_time
         times = []
-        # ------未完成：template的表现样式、href的中time_id的修改、时间的筛选条件---------------
         for time in time_list:
-            begin_time = time.begin_time.replace(tzinfo=None)
-            if servertime <= begin_time: #and int(begin_time.year) != STUDY_TIME_INF:
+            begin_time = time.begin_time
+            if int((servertime-begin_time).days) <= int((course.units.all()[0]).gap_days) and int(begin_time.year) != STUDY_TIME_INF:
                 times.append(time)
         if len(result) == 0:
-            click = True
-            message = u'报名选课'
-            return ren2res('./course/course_index.html', request,
-                           {'click': click, 'time_list': time_list, 'course': course, 'units': units,
-                            'message': message, 'times': times,
-                           })
+            if len(times) != 0:
+                click = True
+                message = u'报名选课'
+                return ren2res('./course/course_index.html', request,
+                               {'click': click, 'time_list': time_list, 'course': course, 'units': units,
+                                'message': message, 'times': times, 'unit_sum': unit_sum})
+            else:
+                click = False
+                message = u'暂无选课安排'
+                return ren2res('./course/course_index.html', request,
+                               {'click': click, 'time_list': time_list, 'course': course, 'units': units,
+                                'message': message, 'times': times, 'unit_sum': unit_sum})
         else:
             # 选了这门课了
             studystatus = result[0]
-            if studystatus.course_time.begin_time.replace(tzinfo=None) < course_begintime:
+            if studystatus.course_time.begin_time < course_begintime:
                 # 询问用户是否重新选课
-                click = True
-                message = u'重新选课'
-                return ren2res('./course/course_index.html', request,
+                if len(times) == 0:
+                    click = False
+                    message = u'暂无选课安排'
+                    return ren2res('./course/course_index.html', request,
                                {'click': click, 'time_list': time_list, 'course': course, 'units': units,
-                                'message': message,'times': times,
-                                })
+                                'message': message, 'times': times, 'unit_sum': unit_sum})
+                else:
+                    click = True
+                    message = u'重新选课'
+                    warning_mess = u'重新选课后，关于这门课的所有学习记录都将被清除，请谨慎选择！'
+                    return ren2res('./course/course_index.html', request,
+                                   {'click': click, 'time_list': time_list, 'course': course, 'units': units,
+                                    'message': message, 'times': times, 'warning_mess': warning_mess,
+                                    'unit_sum': unit_sum})
             else:
                 # 目前正在学习
-                if course_begintime > servertime:
+                if course_begintime > servertime or course_begintime < studystatus.course_time.begin_time:
                     # 还未开课
                     click = False
                     message = u'等待开课'
                     return ren2res('./course/course_index.html', request,
                                    {'click': click, 'course': course, 'units': units, 'message': message,
-                                    'studystatus': studystatus})
+                                    'studystatus': studystatus, 'unit_sum': unit_sum})
                 else:
                     # 可以学习
                     click = True
                     message = u'开始学习'
                     return ren2res('./course/course_index.html', request,
                                    {'click': click, 'course': course, 'units': units, 'message': message,
-                                    'studystatus': studystatus})
+                                    'studystatus': studystatus, 'unit_sum': unit_sum})
     else:
         raise Http404
 
@@ -184,22 +199,25 @@ def course_summary(request, cid):
 def study(request):
     course_id = request.GET.get('cid')
     if course_id is None:
+        print('wtf?!')
         return HttpResponseRedirect('/')
     course_id = int(course_id)
     course = Course.objects.get(id=course_id)
     # 排除Url漏洞
     result = StudyStatus.objects.filter(course=course, user=request.user)
     if len(result) == 0:
+        print('error0')
         return HttpResponseRedirect('/')
     # 获取服务器时间，课程开始时间
-    servertime = datetime.datetime.now()
-    course_begin_time = course.cur_time.begin_time.replace(tzinfo=None)
+    servertime = datetime.date.today()
+    course_begin_time = course.cur_time.begin_time
     # 判断课程是否开始
     if servertime < course_begin_time:
-        #课程未开始
+        # 课程未开始
         return HttpResponseRedirect('/course/' + str(course_id))
     else:
-        #课程已开始执行else
+        print('coursestart')
+        # 课程已开始执行else
         #获取将要学习的unit
         units = course.units.order_by('counter')
         delta_days = int((servertime - course_begin_time).days)
@@ -211,12 +229,13 @@ def study(request):
             if gap_days >= delta_days:
                 obj_unit = units[cnt]
                 break
+        print(obj_unit.counter)
         unit_cnt = request.GET.get('unit_cnt')
         if unit_cnt is None:
             # 直接给出当前unit的第一个section
             sections = obj_unit.sections.all().order_by('counter')
             section = sections[0]
-            video = str(section.video)[5:]
+            video = str(section.video)
             pdf = str(section.pdf)[5:]
             # 返回前更新一下section的访问信息
             section_cnt = 1
@@ -249,10 +268,11 @@ def study(request):
         if section.unit.counter > obj_unit.counter:
             tmp_section = obj_unit.sections.all().order_by('-counter')[0]
             return HttpResponseRedirect(
-                '/study/?cid='+str(course_id)+'&unit_cnt='+str(obj_unit.counter)+'&section_cnt='+str(tmp_section.counter))
+                '/study/?cid=' + str(course_id) + '&unit_cnt=' + str(obj_unit.counter) + '&section_cnt=' + str(
+                    tmp_section.counter))
 
         # 正常返回
-        video = str(section.video)[5:]
+        video = str(section.video)
         pdf = str(section.pdf)[5:]
         # 返回前更新一下section的访问信息
         studystatus = StudyStatus.objects.get(course=course, user=request.user)
@@ -269,7 +289,7 @@ def study(request):
         # 更新last_section
         studystatus.last_section = max(int(studystatus.last_section), int(section.total_counter))
         studystatus.save()
-        return ren2res('./course/study.html', request, {'section': section, 'video': video, 'pdf':pdf,
+        return ren2res('./course/study.html', request, {'section': section, 'video': video, 'pdf': pdf,
                                                         'course': course, 'units': units, 'obj_unit': obj_unit})
 
 
@@ -278,18 +298,32 @@ def study_index(request, cid):
     units = course.units.all().order_by('counter')
     user = request.user
     studystatus = StudyStatus.objects.get(course=course, user=user)
+    if studystatus.course_time.begin_time == course.cur_time.begin_time:
+        finished = False
+    else:
+        finished = True
     unit = []
     for i in range(1, len(units) + 1):
-            unit.append([course.units.get(counter=i), studystatus.teststore.filter(unit_counter=i)])
+        # print(len(studystatus.teststore.filter(unit_counter=i)))
+        unit.append([course.units.get(counter=i), studystatus.teststore.filter(unit_counter=i)])
     last_section_cnt = int(studystatus.last_section)
+    # 未开始学习
+    if last_section_cnt == 0:
+        last_section_cnt = 1
+        next_section_cnt = 1
+        last_section = course.sections.all().get(total_counter=last_section_cnt)
+        next_section = course.sections.all().get(total_counter=next_section_cnt)
+        return ren2res('./course/study_index.html', request,
+                   {'course': course, 'units': unit, 'studystatus': studystatus, 'last_section': last_section,
+                    'next_section': next_section, 'finished': finished})
     last_section = course.sections.all().get(total_counter=last_section_cnt)
-    next_section_cnt = last_section_cnt+1
+    next_section_cnt = last_section_cnt + 1
     if next_section_cnt > len(course.sections.all()):
         next_section_cnt = len(course.sections.all())
     next_section = course.sections.all().get(total_counter=next_section_cnt)
     return ren2res('./course/study_index.html', request,
                    {'course': course, 'units': unit, 'studystatus': studystatus, 'last_section': last_section,
-                    'next_section': next_section})
+                    'next_section': next_section, 'finished': finished})
 
 
 @login_required
@@ -305,7 +339,8 @@ def take_course(request):
             # 此处询问用户是否删除记录重新选课
             result[0].delete()
             print('chongxinxuanke')
-            return HttpResponseRedirect('/course/' + str(course_id), request)
+            # 此处不重定向，直接继续进行下方的Studystatus的新建过程。
+            # return HttpResponseRedirect('/course/' + str(course_id), request)
     except:
         raise Http404
     if len(StudyStatus.objects.filter(course=course, user=user)) == 0:

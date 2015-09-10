@@ -579,5 +579,24 @@ def take_test(request, course_id, unit_cnt, test_counter):
 
 @login_required
 def member(request):
-    user = request.user
-    return None
+    if request.method == 'GET':
+        user = request.user
+        result = StudyStatus.objects.filter(user=user)
+        course_in = []
+        course_out = []
+        for studystatus in result:
+            course = studystatus.course
+            if studystatus.course_time.begin_time == course.cur_time.begin_time:
+                units = course.units.all()
+                deltadays = int((datetime.date.today() - course.cur_time.begin_time).days)
+                for unit in units:
+                    deltadays = deltadays - int(unit.gap_days)
+                    if deltadays <= 0:
+                        process_num = int(float(unit.counter)/float(len(units))*100)
+                        print(process_num)
+                        course_in.append([course, process_num])
+                        break
+            else:
+                course_out.append([course, studystatus.course_time.begin_time])
+        return ren2res('./user/personal.html', request, {'course_in': course_in, 'course_out': course_out})
+

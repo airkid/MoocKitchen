@@ -1,15 +1,18 @@
 # -*- coding:utf-8 -*-
 from django.template import RequestContext
+from django.http import FileResponse
 from django.shortcuts import render_to_response, HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from Mooc.models import *
 from Mooc.forms import *
+import urllib2
+import StringIO
 import random
 import datetime
-
+from os import environ
+from sae.ext.storage import monkey
 # Create your views here.
 STUDY_TIME_INF = 2999
-
 
 def ren2res(template, request, dic={}):
     if request.user.is_authenticated():
@@ -600,3 +603,94 @@ def member(request):
                 course_out.append([course, studystatus.course_time.begin_time])
         return ren2res('./user/personal.html', request, {'course_in': course_in, 'course_out': course_out})
 
+def get_file(request):
+    url = str(request.GET.get('url'))
+    f = urllib2.urlopen(url)
+    # data = StringIO.StringIO(f.read())
+    data = f.read()
+    # monkey.patch_all()
+    # file = open(url, 'rb')
+    response = FileResponse(data)
+    return response
+
+
+def ttt(request):
+    STORAGE_URL='http://moockitchen-mooc.stor.sinaapp.com/'
+    if request.method == 'GET':
+        return ren2res('ttt.html', request, {})
+    else:
+        content = request.FILES['file1']
+        online = environ.get("APP_NAME", "")
+        if online:
+            import sae.const
+            access_key = sae.const.ACCESS_KEY
+            secret_key = sae.const.SECRET_KEY
+            appname = sae.const.APP_NAME
+            domain_name = "mooc"
+            import sae.storage
+
+            s = sae.storage.Client()
+            ob = sae.storage.Object(content.read())
+            type = str(request.POST.get('type'))
+            subtype = str(request.POST.get('subtype'))
+            if type == 'section':
+                course_id = request.POST.get('course_id')
+                course = Course.objects.get(id=course_id)
+                unit_id = request.POST.get('unit_id')
+                unit = course.units.all().get(counter=unit_id)
+                section_id = request.POST.get('section_id')
+                section = unit.sections.all().get(counter=section_id)
+                dir = str(subtype)+'/'+str(course_id)+'_'+str(unit_id)+'_'+str(section_id)
+                if subtype == 'pdf':
+                    section.pdf = STORAGE_URL+dir
+                elif subtype == 'video':
+                    section.video = STORAGE_URL+dir
+                else:
+                    raise Http404
+                section.save()
+            elif type == 'img':
+                if subtype == 'course':
+                    course_id = request.POST.get('course_id')
+                    course = Course.objects.get(id=course_id)
+                    dir = str(type)+'/'+str(subtype)+'/'+str(course_id)
+                    course.img = STORAGE_URL+dir
+                    course.save()
+                elif subtype == 'user':
+                    user_id = request.POST.get('user_id')
+                    user = User.objects.get(id=user_id)
+                    userinfo = user.info
+                    dir = str(type)+'/'+str(subtype)+'/'+str(user_id)
+                    userinfo.img = STORAGE_URL+dir
+                    userinfo.save()
+                elif subtype == 'problem':
+                    problem_id = request.POST.get('problem_id')
+                    problem = QuizQuestion.objects.get(id=problem_id)
+                    dir = str(type)+'/'+str(subtype)+'/'+str(problem_id)+'/summary'
+                    problem.image = STORAGE_URL+dir
+                    problem.save()
+                elif subtype == 'option':
+                    problem_id = request.POST.get('problem_id')
+                    problem = QuizQuestion.objects.get(id=problem_id)
+                    option_id = str(request.POST.get('option_id'))
+                    dir = str(type)+'/'+'problem'+'/'+str(problem_id)+'/'+str(option_id)
+                    if option_id == 'a':
+                        problem.image_a = STORAGE_URL+dir
+                    elif option_id == 'b':
+                        problem.image_b = STORAGE_URL+dir
+                    elif option_id == 'c':
+                        problem.image_c = STORAGE_URL+dir
+                    elif option_id == 'd':
+                        problem.image_d = STORAGE_URL+dir
+                    else:
+                        raise Http404
+                    problem.save()
+                else:
+                    raise Http404
+            elif type == 'serverfile':
+                dir = str(request.POST.get('dir'))
+            else:
+                raise Http404
+            url = s.put(domain_name, dir, ob)
+            return ren2res('ttt.html', request, {'value': url})
+        else:
+            return ren2res('ttt.html', request, {'value': 'save failed'})

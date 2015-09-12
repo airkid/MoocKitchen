@@ -1,3 +1,4 @@
+#coding:utf-8 
 """
 Django settings for MoocKitchen project.
 
@@ -12,8 +13,31 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+import os.path
+#import sae.const
+from os import environ
+debug = not environ.get("APP_NAME", "")
+if debug:
+#LOCAL 本地调试用，便于导出数据库,根据本地MYSQL数据库填写下面参数<----------------如果文件中出现中文，一定要在开始添加 #coding:utf-8
+    MYSQL_DB = 'kitchen'
+    MYSQL_USER = 'kitchen'
+    MYSQL_PASS = 'kitchen'
+    MYSQL_HOST_M = '127.0.0.1'
+    MYSQL_HOST_S = '127.0.0.1'
+    MYSQL_PORT = '3306'
+else:
+#SAE
+    import sae.const
+    # from sae._restful_mysql import monkey
+    # monkey.patch()
+    MYSQL_DB = sae.const.MYSQL_DB
+    MYSQL_USER = sae.const.MYSQL_USER
+    MYSQL_PASS = sae.const.MYSQL_PASS
+    MYSQL_HOST_M = sae.const.MYSQL_HOST
+    MYSQL_HOST_S = sae.const.MYSQL_HOST_S
+    MYSQL_PORT = sae.const.MYSQL_PORT
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +49,7 @@ SECRET_KEY = 'j25%%awr4-@25wn$34@owq$ht2fx$1q+ct^4-2m%mq7m$!#2xc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -43,7 +67,7 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -79,14 +103,12 @@ WSGI_APPLICATION = 'MoocKitchen.wsgi.application'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kitchen',
-        'USER': 'kitchen',
-        'PASSWORD': 'kitchen',
-        'HOST':'127.0.0.1',
-        'POST':'3306',
+        'NAME': MYSQL_DB,
+        'USER': MYSQL_USER,
+        'PASSWORD': MYSQL_PASS,
+        'HOST': MYSQL_HOST_M,
+        'PORT': MYSQL_PORT,
     }
 }
 
@@ -111,3 +133,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 20971520
+FILE_UPLOAD_TEMP_DIR = '/s/mooc/tmp/'

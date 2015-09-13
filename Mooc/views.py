@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.http import FileResponse
 from django.shortcuts import render_to_response, HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from Mooc.models import *
 from Mooc.forms import *
 import urllib2
@@ -11,8 +12,10 @@ import random
 import datetime
 from os import environ
 from sae.ext.storage import monkey
+from django.http import JsonResponse
 # Create your views here.
 STUDY_TIME_INF = 2999
+
 
 def ren2res(template, request, dic={}):
     if request.user.is_authenticated():
@@ -37,7 +40,7 @@ def login(request):
     if request.method == 'GET':
         # 匿名用户说明未登陆
         if request.user.is_anonymous():
-            #后继访问请求
+            # 后继访问请求
             request.session['login_from'] = request.META.get('HTTP_REFERER', '/')
             loginform = LoginForm()
             return ren2res('./user/login.html', request, {'loginform': loginform})
@@ -48,7 +51,7 @@ def login(request):
     elif request.method == 'POST':
         # 验证身份
         loginform = LoginForm(request.POST)
-        #用于判断登录的表单的数据是否合法
+        # 用于判断登录的表单的数据是否合法
         if loginform.is_valid():
             username = loginform.cleaned_data['username']
             password = loginform.cleaned_data['password']
@@ -66,7 +69,7 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect('/')
 
 
 def register(request):
@@ -87,7 +90,7 @@ def register(request):
             # sex = registerform.cleaned_data['sex']
             # userform = {'username': username, 'password1': password1, 'pass2': password2,
             # 'nickname': nickname, 'school': school, 'birthday': birthday, 'sex': sex}
-            #用于存储用户信息
+            # 用于存储用户信息
             newuser = User()
             newuser.username = username
             newuser.set_password(password1)
@@ -103,6 +106,59 @@ def register(request):
             registerform.password2 = ''
             return ren2res('./user/register.html', request, {'registerform': registerform})
 
+@login_required
+@csrf_exempt
+def change_pass(request):
+    old = str(request.POST.get('old'))
+    new1 = str(request.POST.get('new1'))
+    new2 = str(request.POST.get('new2'))
+    print(old+new1+new2)
+    username = request.user.username
+    print('username='+str(username))
+    user = auth.authenticate(username=username, password=old)
+    print(request.user)
+    if user is None:
+        print('error1')
+        message = u'原密码错误'
+        return JsonResponse({'message':message})
+    elif new1 != new2:
+        message = u'两次密码不一致'
+        return JsonResponse({'message':message})
+    else:
+        user.set_password(new1)
+        user.save()
+        message = u'保存成功'
+        return JsonResponse({'message':message})
+
+@login_required
+@csrf_exempt
+def change_info(request):
+    sex = request.POST.get('sex')
+    birthday = request.POST.get('birthday')
+    school = request.POST.get('school')
+    userinfo = request.user.info
+    if sex is not None:
+        userinfo.sex = sex
+    if birthday != '':
+        userinfo.birthday = birthday
+    if school is not None:
+        userinfo.school = school
+    content = request.FILES["file1"]
+    online = environ.get("APP_NAME", "")
+    if len(content) != 0 and online:
+        import sae.const
+        access_key = sae.const.ACCESS_KEY
+        secret_key = sae.const.SECRET_KEY
+        appname = sae.const.APP_NAME
+        domain_name = "mooc"
+        import sae.storage
+        s = sae.storage.Client()
+        ob = sae.storage.Object(content.read())
+        dir = 'img/user/'+str(request.user.id)
+        url = s.put(domain_name, dir, ob)
+        userinfo.img = url
+    userinfo.save()
+    return JsonResponse({'message': u'个人信息修改成功！'})
 
 @login_required
 def course_summary(request, cid):
@@ -386,7 +442,7 @@ def take_quiz(request, course_id, unit_cnt, section_cnt):
                     # ......
             else:
                 # 不存在quizstore
-                #为用户创建quizstore
+                # 为用户创建quizstore
                 quizstore = QuizStore(studystatus=studystatus, unit_counter=unit_cnt, section_counter=section_cnt)
                 quizstore.save()
                 Answer = []
@@ -407,10 +463,10 @@ def take_quiz(request, course_id, unit_cnt, section_cnt):
                 studystatus = result[0]
                 quizstores = studystatus.quizstore.all().filter(unit_counter=unit_cnt, section_counter=section_cnt)
                 quizstore = quizstores[0]
-                judge = question.filter(question_type='0')  #获取quiz中的判断题
-                option = question.filter(question_type='1')  #获quiz中的取选择题
+                judge = question.filter(question_type='0')  # 获取quiz中的判断题
+                option = question.filter(question_type='1')  # 获quiz中的取选择题
                 Answer = []
-                #以下两个for循环用于获取用户答案
+                # 以下两个for循环用于获取用户答案
                 #将选择题答案存入Answer
                 for num in range(0, len(option)):
                     if request.POST.get('option' + str(num)) == None:
@@ -440,36 +496,36 @@ def take_quiz(request, course_id, unit_cnt, section_cnt):
         return HttpResponseRedirect('/')
 
 
-@login_required
-def choose_test(request, course_id):
-    try:
-        course = Course.objects.get(id=course_id)
-        units = course.units.all()
-        user = request.user
-        unit = []
-        result = StudyStatus.objects.filter(user=user, course=course)
-        studystatus = result[0]
-        for i in range(1, len(units) + 1):
-            unit.append([course.units.get(counter=i), studystatus.teststore.filter(unit_counter=i)])
-    except Exception:
-        raise Http404
-    return ren2res('./course/choose_test.html', request, {'course': course, 'course_id': course_id, 'units': unit})
+# @login_required
+# def choose_test(request, course_id):
+#     try:
+#         course = Course.objects.get(id=course_id)
+#         units = course.units.all()
+#         user = request.user
+#         unit = []
+#         result = StudyStatus.objects.filter(user=user, course=course)
+#         studystatus = result[0]
+#         for i in range(1, len(units) + 1):
+#             unit.append([course.units.get(counter=i), studystatus.teststore.filter(unit_counter=i)])
+#     except Exception:
+#         raise Http404
+#     return ren2res('./course/choose_test.html', request, {'course': course, 'course_id': course_id, 'units': unit})
 
 
 @login_required
 def take_test(request, course_id, unit_cnt, test_counter):
     # 当test_counter=0时，自动分配合适的test_counter
-    print('test'+str(test_counter))
+    print('test' + str(test_counter))
     if True:
-    # try:
+        # try:
         course = Course.objects.get(id=course_id)
         user = request.user
         unit = course.units.get(counter=unit_cnt)
         unit_test = unit.test
         # -----------------------------------------------2
         max_submit_times = unit_test.max_submit_times
-        last_time = unit_test.last_time.replace(tzinfo=None)
-        #-----------------------------------------------2
+        last_time = unit_test.last_time
+        # -----------------------------------------------2
         result = StudyStatus.objects.filter(user=user, course=course)
         studystatus = result[0]
     # except Exception:
@@ -480,9 +536,9 @@ def take_test(request, course_id, unit_cnt, test_counter):
     answer = []
     if int(test_counter) == 0:
         result = studystatus.teststore.all()
-        test_counter = len(result)+1
-    print('test'+str(test_counter))
-    #-----------------------------------------------3
+        test_counter = len(result) + 1
+    print('test' + str(test_counter))
+    # -----------------------------------------------3
     if int(test_counter) > int(max_submit_times):
         return HttpResponseRedirect('/')
     #-----------------------------------------------3
@@ -503,6 +559,7 @@ def take_test(request, course_id, unit_cnt, test_counter):
                 testscore = teststore.score
             else:  #teststore不存在，用户第一次做test
                 #用于保存题目的编号
+                print('not exist')
                 questions_id = ''
                 while ( len(questions) < ( len(question) * 2 / 3 ) ):  #随机抽取数量2/3的题目
                     a = random.randint(1, len(question))
@@ -513,7 +570,7 @@ def take_test(request, course_id, unit_cnt, test_counter):
                         questions_id += (str(a) + ',')
                 #建立一个teststore存储题目
                 teststore = TestStore(unit_counter=unit_cnt, test_counter=test_counter, studystatus=studystatus,
-                                      question_id=questions_id, score=0, submit_time=datetime.datetime.now())
+                                      question_id=questions_id, score=0, submit_time=datetime.date.today())
                 teststore.save()
                 #调整题目顺序,判断在前，选择在后
                 questions.sort(key=lambda x: x.question_type)
@@ -559,7 +616,7 @@ def take_test(request, course_id, unit_cnt, test_counter):
                     answer.append(request.POST.get('option' + str(num + offset)))
                     questions[num + offset].user_answer = answer[num + offset]
             #------------------------------------------------------------------------
-            if datetime.datetime.now() <= last_time:
+            if datetime.date.today() <= last_time:
                 #计算得分
                 #在提交时间内保存题目分数，逾期不保存
                 for i in range(0, len(answer)):
@@ -602,6 +659,7 @@ def member(request):
             else:
                 course_out.append([course, studystatus.course_time.begin_time])
         return ren2res('./user/personal.html', request, {'course_in': course_in, 'course_out': course_out})
+
 
 def get_file(request):
     url = str(request.GET.get('url'))

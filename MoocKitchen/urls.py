@@ -28,8 +28,11 @@ urlpatterns = [
     url(r'^study/$', views.study),
     url(r'^take_course/$', views.take_course),
     url(r'^quiz/([0-9]+)/([0-9]+)/([0-9]+)$', views.take_quiz),
-    url(r'^member$', views.member),
-    url(r'^choose_test/([0-9]+)$', views.choose_test),
+    url(r'^user', views.member),
     url(r'^test/([0-9]+)/([0-9]+)/([0-9]+)$', views.take_test),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^download/', views.get_file),
+    url(r'^ttt$', views.ttt),
+    url(r'^change_pass$', views.change_pass),
+    url(r'^change_info$', views.change_info),
 ]

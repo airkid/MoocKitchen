@@ -1,0 +1,71 @@
+<html>  
+<head>  
+<title>testing page</title>  
+</head>  
+<body>  
+<h1>Upload</h1>
+<br>  
+<center>  
+{{value}}  
+  
+</center>
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="section">
+    <input type="hidden" name='subtype' value="pdf">
+    PDF File to process: <INPUT NAME="file1" TYPE="file"><br>
+    course_id:<input name="course_id" type="text"><br>
+    unit_id:<input name="unit_id" type="text"><br>
+    section_id:<input name="section_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="section">
+    <input type="hidden" name='subtype' value="video">
+    Video File to process: <INPUT NAME="file1" TYPE="file"><br>
+    course_id:<input name="course_id" type="text"><br>
+    unit_id:<input name="unit_id" type="text"><br>
+    section_id:<input name="section_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+<div>Img</div>
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="img">
+    <input type="hidden" name='subtype' value="course">
+    Course Img: <INPUT NAME="file1" TYPE="file"><br>
+    Course id:<input name="course_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="img">
+    <input type="hidden" name='subtype' value="user">
+    User Img: <INPUT NAME="file1" TYPE="file"><br>
+    User id:<input name="user_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="img">
+    <input type="hidden" name='subtype' value="problem">
+    Problem Img: <INPUT NAME="file1" TYPE="file"><br>
+    Problem id:<input name="problem_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="img">
+    <input type="hidden" name='subtype' value="option">
+    Problem Option Img: <INPUT NAME="file1" TYPE="file"><br>
+    Problem id:<input name="problem_id" type="text"><br>
+    Problem Option(a/b/c/d):<input name="option_id" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+
+<FORM ENCTYPE="multipart/form-data" ACTION="/ttt" METHOD=POST>
+    <input type="hidden" name='type' value="serverfile">
+    ServerFile: <INPUT NAME="file1" TYPE="file"><br>
+    Dir(img/course/2):<input name="dir" type="text"><br>
+    <INPUT TYPE="submit" VALUE="Send File"><br>
+</FORM>
+
+
+</body>  
+</html>  

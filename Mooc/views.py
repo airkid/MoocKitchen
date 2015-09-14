@@ -112,11 +112,11 @@ def change_pass(request):
     old = str(request.POST.get('old'))
     new1 = str(request.POST.get('new1'))
     new2 = str(request.POST.get('new2'))
-    print(old+new1+new2)
+    #print(old+new1+new2)
     username = request.user.username
-    print('username='+str(username))
+    #print('username='+str(username))
     user = auth.authenticate(username=username, password=old)
-    print(request.user)
+    #print(request.user)
     if user is None:
         print('error1')
         message = u'原密码错误'
@@ -128,6 +128,7 @@ def change_pass(request):
         user.set_password(new1)
         user.save()
         message = u'保存成功'
+        auth.login(request, user)
         return JsonResponse({'message':message})
 
 @login_required
@@ -143,20 +144,23 @@ def change_info(request):
         userinfo.birthday = birthday
     if school is not None:
         userinfo.school = school
-    content = request.FILES["file1"]
-    online = environ.get("APP_NAME", "")
-    if len(content) != 0 and online:
-        import sae.const
-        access_key = sae.const.ACCESS_KEY
-        secret_key = sae.const.SECRET_KEY
-        appname = sae.const.APP_NAME
-        domain_name = "mooc"
-        import sae.storage
-        s = sae.storage.Client()
-        ob = sae.storage.Object(content.read())
-        dir = 'img/user/'+str(request.user.id)
-        url = s.put(domain_name, dir, ob)
-        userinfo.img = url
+    try:
+        content = request.FILES["file1"]
+        online = environ.get("APP_NAME", "")
+        if len(content) != 0 and online:
+            import sae.const
+            access_key = sae.const.ACCESS_KEY
+            secret_key = sae.const.SECRET_KEY
+            appname = sae.const.APP_NAME
+            domain_name = "mooc"
+            import sae.storage
+            s = sae.storage.Client()
+            ob = sae.storage.Object(content.read())
+            dir = 'img/user/'+str(request.user.id)
+            url = s.put(domain_name, dir, ob)
+            userinfo.img = url
+    except Exception:
+        print(1)
     userinfo.save()
     return JsonResponse({'message': u'个人信息修改成功！'})
 
@@ -752,3 +756,20 @@ def ttt(request):
             return ren2res('ttt.html', request, {'value': url})
         else:
             return ren2res('ttt.html', request, {'value': 'save failed'})
+
+@login_required
+@csrf_exempt
+def create_message(request):
+    servertime = datetime.date.today()
+    user = request.user
+    course_id = request.POST.get('course_id')
+    course = Course.objects.get(id=course_id)
+    content = str(request.POST.get('content'))
+    reference_id = request.POST.get('reference_id')
+    if reference_id is None:
+        reference_id = -1
+    floor_counter = len(Message.objects.filter(course=course))+1
+    message = Message(user=user, course=course, reference=reference_id, content=content, floor=floor_counter,
+                      publishTime=servertime)
+    message.save()
+    return JsonResponse({'message': message})

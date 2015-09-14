@@ -7,6 +7,9 @@ body {
 .left{
 	float: left;
 }
+.right {
+  float: right;
+}
 
 /*
  * Global add-ons
@@ -71,6 +74,9 @@ body {
  * Main content
  */
 
+.mymain {
+  max-width: 1000px;
+}
 .main {
   width: 100%;
   padding: 20px;
@@ -89,6 +95,32 @@ body {
   margin-top: 0;
 }
 
+#learning {
+  /*display: none;*/
+  padding: 30px;
+}
+.mypro {
+  max-width: 700px;
+  margin-top: 30px;
+}
+
+#completed {
+  display: none;
+  padding: 30px;
+}
+.kctime {
+  font-size: 20px;
+}
+
+#personal_information {
+  padding: 30px;
+  display: none;
+}
+
+#change_password {
+  padding: 30px;
+  display: none;
+}
 
 /*
  * Placeholder dashboard ideas
@@ -115,3 +147,33 @@ body {
   width: 70%;
 }
 
+.myBox1 {
+  margin-top: 5px;
+}
+
+.file {
+  position: relative;
+  display: inline-block;
+  background: #337ab7;
+  border: 1px solid #2e6da4;
+  border-radius: 4px;
+  padding: 4px 12px;
+  overflow: hidden;
+  color: #ffffff;
+  text-decoration: none;
+  text-indent: 0;
+  line-height: 20px;
+}
+.file input {
+  position: absolute;
+  font-size: 100px;
+  right: 0;
+  top: 0;
+  opacity: 0;
+}
+.file:hover {
+  background: #AADFFD;
+  border-color: #78C3F3;
+  color: #004974;
+  text-decoration: none;
+}

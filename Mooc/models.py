@@ -10,6 +10,7 @@ class UserInfo(models.Model):
     school = models.CharField(max_length=20, blank=True)
     birthday = models.DateField(blank=True, null=True)
     sex = models.CharField(choices=(('M', u'男'), ('F', u'女')), max_length=1, blank=True)
+    img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/user/default')
 
     def __unicode__(self):
         return self.nickname
@@ -21,6 +22,8 @@ class Course(models.Model):
     # 课程简介
     summary = models.CharField(max_length=200)
     announcement = models.CharField(max_length=200, blank=True, default=u'暂无公告')
+    img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/course/default')
+    teacher = models.CharField(max_length=20, default='NoTeacher')
 
     def __unicode__(self):
         return self.name
@@ -28,7 +31,7 @@ class Course(models.Model):
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, related_name='times')
-    begin_time = models.DateTimeField()
+    begin_time = models.DateField()
     cur_course = models.OneToOneField(Course, related_name='cur_time', blank=True, null=True)
 
     def __unicode__(self):
@@ -39,7 +42,7 @@ class StudyStatus(models.Model):
     user = models.ForeignKey(User, related_name='status')
     course = models.ForeignKey(Course, related_name='status')
     course_time = models.ForeignKey(CourseTime, related_name='status')
-    last_section = models.IntegerField(default=1, blank=True)
+    last_section = models.IntegerField(default=0, blank=True)
 
     def __unicode__(self):
         return str(self.id)
@@ -49,13 +52,15 @@ class StudyStatus(models.Model):
 class Quiz(models.Model):
     id = models.AutoField(primary_key=True)
 
+    def __unicode__(self):
+        return 'Quiz'+str(self.id)
 
 class UnitTest(models.Model):
     title = models.CharField(max_length=30)
     summary = models.CharField(max_length=200)
     test_content = models.OneToOneField(Quiz, related_name='unit_test', blank=True)
     # 单元测试截止时间
-    last_time = models.DateTimeField(blank=True, null=True)
+    last_time = models.DateField(blank=True, null=True)
     #单元测试最大提交次数
     max_submit_times = models.IntegerField(default=3, blank=True)
 
@@ -81,16 +86,16 @@ class QuizQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, related_name='questions')
     title = models.CharField(max_length=100, blank=True)
     option_a = models.CharField(max_length=10, default='A')
-    image_a = models.FileField(upload_to='./Mooc/static/files/quizimg', blank=True)
+    image_a = models.CharField(blank=True, max_length=100, null=True)
     option_b = models.CharField(max_length=10, default='B')
-    image_b = models.FileField(upload_to='./Mooc/static/files/quizimg', blank=True)
+    image_b = models.CharField(blank=True, max_length=100, null=True)
     option_c = models.CharField(max_length=10, default='C')
-    image_c = models.FileField(upload_to='./Mooc/static/files/quizimg', blank=True)
+    image_c = models.CharField(blank=True, max_length=100, null=True)
     option_d = models.CharField(max_length=10, default='D')
-    image_d = models.FileField(upload_to='./Mooc/static/files/quizimg', blank=True)
+    image_d = models.CharField(blank=True, max_length=100, null=True)
     answer = models.CharField(max_length=30)
     counter = models.IntegerField()
-    image = models.FileField(upload_to='./Mooc/static/files/quizimg', blank=True)
+    image = models.CharField(blank=True, max_length=100, null=True)
     # 用于临时存储答案
     user_answer = models.CharField(max_length=10, blank=True)
     question_score = models.IntegerField(default=5, blank=True)
@@ -102,15 +107,15 @@ class QuizQuestion(models.Model):
         ordering = ['question_type']
 
     def __unicode__(self):
-        return self.title
+        return str(self.id)+self.title
 
 
 class Section(models.Model):
     course = models.ForeignKey(Course, related_name='sections')
     unit = models.ForeignKey(Unit, related_name='sections')
     title = models.CharField(max_length=30)
-    video = models.FileField(upload_to='./Mooc/static/files/video', blank=True, null=True)
-    pdf = models.FileField(upload_to='./Mooc/static/files/pdf', blank=True, null=True)
+    video = models.CharField(blank=True, max_length=100, null=True)
+    pdf = models.CharField(blank=True, max_length=100, null=True)
     quiz = models.OneToOneField(Quiz, related_name='section', blank=True, null=True)
     counter = models.IntegerField()
     total_counter = models.IntegerField(default=0)
@@ -140,7 +145,7 @@ class TestStore(models.Model):
     studystatus = models.ForeignKey(StudyStatus, related_name='teststore')
     test_counter = models.IntegerField()
     unit_counter = models.IntegerField()
-    submit_time = models.DateTimeField(null=True, blank=True)
+    submit_time = models.DateField(null=True, blank=True)
     # 用于保存题目的Id
     question_id = models.CharField(default='', max_length=30, blank=True)
     Answer = models.CharField(default='', max_length=30, blank=True)
@@ -150,5 +155,25 @@ class TestStore(models.Model):
         ordering = ['unit_counter']
 
 
+class Message(models.Model):
+    course = models.ForeignKey(Course, related_name='messages')
+    user = models.ForeignKey(User, related_name='messages')
+    reference = models.IntegerField(default='-1', null=True)
+    floor = models.IntegerField(default='1')
+    content = models.CharField(max_length=120, default='', null=True)
+    publishTime = models.DateField(null=True, blank=True)
 
+    def __unicode__(self):
+        return 'Message '+str(self.id)+' :'+str(self.content)
 
+    class META:
+        ordering = ['floor']
+
+    def get_reference(self):
+        if self.reference is None:
+            return None
+        elif int(self.reference) == -1:
+            return None
+        else:
+            message = Message.objects.get(id=self.reference)
+            return message

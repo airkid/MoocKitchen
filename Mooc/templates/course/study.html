@@ -10,6 +10,11 @@
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <script src="../static/js/ie-emulation-modes-warning.js"></script>
     <link href="../static/css/study.css" rel="stylesheet">
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/jquery/jquery.min.js"></script>
+    <script src="../static/js/pdf.js"></script>
+    <script src="../static/js/pdf.worker.js"></script>
+    <script src="../static/js/study.js"></script>
 </head>
 <body>
 <!-- 导航栏
@@ -32,12 +37,12 @@
                 <!--  待修改 此处应该定位到course_list之类的地方  -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if user %}
+                <!-- {% if user %} -->
                     <p class="navbar-collapse navbar-text  navbar-right">Welcome,
-                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }} </a>
+                        <a href="/user/" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
                         <a href="/logout" class="navbar-link bg-danger">Exit</a>
                     </p>
-                {% else %}
+                    <!-- {% else %} -->
                     <div class="navbar-collapse navbar-right">
                         <a href="/login">
                             <button class="btn btn-primary navbar-btn">Sign in</button>
@@ -46,7 +51,7 @@
                             <button class="btn btn-default navbar-btn">Register</button>
                         </a>
                     </div>
-                {% endif %}
+                    <!-- {% endif %} -->
             </ul>
             <form class="navbar-form navbar-right">
                 <input type="text" class="form-control" placeholder="想看啥搜啥">
@@ -55,7 +60,6 @@
         <!--/.nav-collapse -->
     </div>
 </nav>
-
 <!-- 主体
 ======================================================= -->
 <div class="container mycontainer">
@@ -64,34 +68,46 @@
         =================================================== -->
         <div class="col-xs-12 col-sm-9 myleft">
             <h2>{{ section.title }}</h2>
-            <video width="800" height="500" controls="controls">
-                <source src='../{{ video }}' type="video/mp4">
+
+            <div class="btn-group mybtn_group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default active" id="showsp">视频</button>
+                <button type="button" class="btn btn-default" id="showpdf">PDF</button>
+            </div>
+            <!-- =================视频======================= -->
+            <video id="mysp" width="800" height="500" controls="controls">
+                <source src='{{ video }}' type="video/mp4">
             </video>
+            <!-- =================PDF======================= -->
+            <div id="mypdf">
+                <!-- 笔记区域 -->
+                <div>
+                    <canvas id="the-canvas" style="border:1px solid black" height="300" width="400"></canvas>
+                </div>
+                <!-- 按钮区域 -->
+                <div class="pdf_btn">
+                    <br>
+                    <button type="button" class="btn btn-default" id="prev"><span
+                            class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Previous
+                    </button>
+                    <button type="button" class="btn btn-default" id="next">Next <span
+                            class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    &nbsp; &nbsp;
+                    <span>Page: <span id="page_num">1</span> / <span id="page_count">14</span></span>
+                </div>
+            </div>
+            <hr>
+            <div class="well well-lg intest" width="800">
+              <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 今天的课程看完了？要不要来做个小quiz呢~（quiz成绩不计入本课程最后成绩哦~）
+              <a class="btn btn-info" href="/quiz/{{ course.id }}/{{ section.unit.counter }}/{{ section.counter }}" role="button">点击进入测试</a>
+            </div>
         </div>
-        <div>
-            <br>
-            <button id="prev">Previous</button>
-            <button id="next">Next</button>
-            &nbsp; &nbsp;
-            <span>Page: <span id="page_num">1</span> / <span id="page_count">14</span></span>
-        </div>
-
-        <div>
-            <canvas id="the-canvas" style="border:1px solid black" height="300" width="400"></canvas>
-        </div>
-
-        <!-- for legacy browsers add compatibility.js -->
-        <!--<script src="../compatibility.js"></script>-->
-
-        <script src="../static/js/pdf.js"></script>
-
-        <script id="script">
+         <script id="script">
             //
             // If absolute URL from the remote server is provided, configure the CORS
             // header on that server.
             //
             //PDFJS.workerSrc = 'pdf.js';
-            var url = '../{{ pdf }}';
+            var url = '../download/?url={{ section.pdf }}';
 
 
             //
@@ -197,43 +213,47 @@
                 renderPage(pageNum);
             });
         </script>
-
         <!-- 右边
         =================================================== -->
+     <a class="btn btn-info return right" href="/study_index/{{ course.id }}" role="button">返回 <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
+        <div class="btn-group mybtn_group_2 right" role="group" aria-label="...">
+            <button type="button" class="btn btn-default active" id="showlb">单元列表</button>
+            <button type="button" class="btn btn-default" id="showbj">随堂笔记</button>
+        </div>
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas myright">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <!-- =================单元列表====================== -->
+            <div class="panel panel-default" id="mylb">
+                <ul class="list-group">
                     {% for unit in units %}
-                        <label>{{ unit.title }}</label><br>
-                        {% if unit.counter <= obj_unit.counter %}
-                            {% for sec in unit.sections.all %}
-                                <a href='/study/?course_id={{ course.id }}&unit_cnt={{ unit.counter }}&section_cnt={{ sec.counter }}'>{{ sec.title }}</a>
-                                <br>
-                            {% endfor %}
-                        {% else %}
-                            {% for sec in unit.sections.all %}
-                                <label>{{ sec.title }}</label>
-                                <br>
-                            {% endfor %}
-                        {% endif %}
-                        <br>
+                  <li class="list-group-item"><a href="#" id="mylist{{ unit.counter }}"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>{{ unit.title }}</a></li>
+                    <ul id="mylist{{ unit.counter }}{{ unit.counter }}" class="mynone">
+                     {% if unit.counter <= obj_unit.counter %}
+                        {% for sec in unit.sections.all %}
+                      <li class="list-group-item">
+                          <a href='/study/?cid={{ course.id }}&unit_cnt={{ unit.counter }}&section_cnt={{ sec.counter }}'>
+                          {{ sec.title }}
+                          </a>
+                      </li>
+                        {% endfor %}
+                     {% else %}
+                         {% for sec in unit.sections.all %}
+                      <li class="list-group-item">
+                          {{ sec.title }}
+                      </li>
+                        {% endfor %}
+                     {% endif %}
+                    </ul>
                     {% endfor %}
-                </div>
+                  </ul>
+            </div>
+            <!-- =================随堂笔记====================== -->
+            <div id="mybj">
+                <textarea class="form-control" rows="20"></textarea>
             </div>
         </div>
     </div>
     <hr class="featurette-divider">
 </div>
-
-
-<!-- {% for unit in course.units.all %}
-    <label>unit.title</label><br>>
-    {% for section in unit.sections.all %}
-        <a href="/study/?cid={{ course.id }}&ucnt={{ unit.counter }}&scnt={{ section.counter }}">section:
-    {{ section.counter }}</a>
-    {% endfor %}
-{% endfor %}
-<object data='../{{ video }}' height="200" width="200"/> -->
 
 <!-- FOOT
 =========================================================== -->
@@ -245,7 +265,6 @@
 
 <!-- script
 =========================================================== -->
-<script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>

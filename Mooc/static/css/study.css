@@ -1,17 +1,66 @@
 body {
-  min-height: 1000px;
+  min-height: 800px;
   padding-top: 50px;
   padding-bottom: 40px;
   font-family: "微软雅黑";
   color: #5a5a5a;
 }
+a:active,
+a:hover {
+  outline: 0;
+}
+.right {
+	float: right;
+}
 
 .mycontainer {
-	padding-top: 40px;
+	padding-top: 15px;
 }
+
+/*-------------------左边------------------*/
 .myleft {
 	width: 75%;
 }
+.mybtn_group {
+	margin-top: 10px;
+}
+#mysp {
+	/*display: none;*/
+}
+#mypdf {
+	display: none;
+}
+.pdf_btn {
+	padding-bottom: 10px;
+}
+.intest {
+	text-align: center;
+}
+
+/*------------------右边--------------------*/
 .myright {
 	width: 25%;
+}
+.myunit {
+	color: green;
+}
+.return {
+	margin-right: 15px;
+}
+.mybtn_group_2 {
+    margin-top: 75px;
+    margin-right: -70px;
+}
+#mylb {
+	/*display: none;*/
+}
+#mybj {
+	display: none;
+}
+.mynone {
+	display: none;
+}
+.list-group > li > a {
+	text-decoration: none;
+	font-size: 15px;
 }

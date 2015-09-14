@@ -41,7 +41,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <!-- {% if user %} -->
                     <p class="navbar-collapse navbar-text  navbar-right">Welcome,
-                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
+                        <a href="/user/" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
                         <a href="/logout" class="navbar-link bg-danger">Exit</a>
                     </p>
                     <!-- {% else %} -->
@@ -94,15 +94,26 @@
             <div id="news">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4>欢迎回来，亲爱的 {{ userinfo.nickname }}</h4>
+                        <h4>欢迎，亲爱的 {{ userinfo.nickname }}</h4>
                     </div>
-                    <div class="panel-body">
-                        <h4>您上一次学习到 <span class="blue">{{ last_section.title }}</span></h4>
+                    {% if not finished %}
+                        <div class="panel-body">
+                            <h4>您上一次学习到 <span class="blue">{{ last_section.title }}</span></h4>
 
-                        <div class="text_center right"><a class="btn btn-lg btn-primary"
-                        href="/study/?cid={{ course.id }}&unit_cnt={{ next_section.unit.counter }}&section_cnt={{ next_section.counter }}" role="button">继续学习</a>
+                            <div class="text_center right"><a class="btn btn-lg btn-primary"
+                                                              href="/study/?cid={{ course.id }}&unit_cnt={{ next_section.unit.counter }}&section_cnt={{ next_section.counter }}"
+                                                              role="button">继续学习</a>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="panel-body">
+                            <h4>您的学习已经结束，您可以</h4>
+
+                            <div class="text_center right"><a class="btn btn-lg btn-primary"
+                                                              href="/course/{{ course.id }}" role="button">重新选课</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <br>
 
@@ -115,18 +126,21 @@
                 <ul id="accordion" class="accordion inmyBox1">
                     {% for unit,items in units %}
                         <li>
-                            <div class="link"><i class="fa fa-paint-brush"></i>{{ unit.title }}<i style="left: 700px; top: 0px">
-                            {% ifequal items|length unit.test.max_submit_times.numerator %}
+                            <div class="link"><i class="fa fa-paint-brush"></i>{{ unit.title }}<i
+                                    style="left: 700px; top: 0px">
+                                {% ifequal items|length unit.test.max_submit_times.numerator %}
                                     <a href="#">
-                                    <button class="btn btn-primary navbar-btn">已经完成</button>
+                                        <button class="btn btn-primary navbar-btn">已经完成</button>
                                     </a>
-                            {% else %}
-                                    <a href="/test/{{ course.id }}/{{ unit.counter }}/0">
-                                    <button class="btn btn-primary navbar-btn">进入测试</button>
-                                    </a>
-                            {% endifequal %}
-                            &nbsp;&nbsp;&nbsp;&nbsp;{{ items | length }} / {{ unit.test.max_submit_times }}
-                                </i><i class="fa fa-chevron-down"></i></div>
+                                {% else %}
+                                    {% if not finished %}
+                                        <a href="/test/{{ course.id }}/{{ unit.counter }}/0">
+                                            <button class="btn btn-primary navbar-btn">进入测试</button>
+                                        </a>
+                                    {% endif %}
+                                {% endifequal %}
+                                &nbsp;&nbsp;&nbsp;&nbsp;{{ items | length }} / {{ unit.test.max_submit_times }}
+                            </i><i class="fa fa-chevron-down"></i></div>
                             <ul class="submenu">
                                 <li><a href="#">
                                     <div class="row">

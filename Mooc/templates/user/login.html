@@ -27,10 +27,11 @@
           {% csrf_token %}
 		<div class="form-text">
 		  <input type="text" class="text" name="username" value="用户名" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '用户名';}" >
-		  <input type="password" name="password" value="密码" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '密码';}">
+		  <input type="password" name="password" value="1234567" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '1234567';}">
 		</div>
 		<input type="submit"value="GO" >
 	  </form>
+        <div id="error"><i class="glyphicon glyphicon-remove-circle"></i> {{ loginform.errors }}</div>
 	</div>
     <!--/User-Login-->
     <!--start-copyright-->

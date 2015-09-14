@@ -64,6 +64,7 @@ $(document).ready(function () {
         $('#change_info_form').ajaxForm(
             function (data, status) {
                 alert(data['message']);
+                //把头像换成新的
             });
     });
 });

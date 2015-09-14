@@ -25,3 +25,19 @@ body {
 .myh3 {
 	font-size: 20px;
 }
+.btn > a:link {
+text-decoration: none;
+color: #fff;
+}
+.btn > a:visited {
+text-decoration: none;
+color: #fff;
+}
+.btn > a:hover {
+text-decoration: none;
+color: #fff;
+}
+.btn > a:active {
+text-decoration: none;
+color: #fff;
+}

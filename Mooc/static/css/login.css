@@ -247,3 +247,7 @@ h1 {
   margin-left: 1em;
 }
 }
+#error{
+  margin-top: 5px;
+  color: #FF0000;
+}

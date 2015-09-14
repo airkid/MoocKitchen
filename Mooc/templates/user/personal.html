@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,228 +10,252 @@
     <script src="../static/js/ie-emulation-modes-warning.js"></script>
     <link href="../static/css/personal.css" rel="stylesheet">
     <script src="../static/js/jquery/jquery.min.js"></script>
+    <!--<script src="http://malsup.github.com/jquery.form.js"></script>-->
+    <script src="../static/js/jquery.form.js"></script>
     <script src="../static/js/personal.js"></script>
-  </head>
-  <body>
-  <!-- 导航栏
-  ==================================================-->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
+    <script src="../static/js/safe_ajax_post.js"></script>
+</head>
+<body>
+<!-- 导航栏
+==================================================-->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li id="showkc"><a href="#">课程</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <!-- {% if user %} -->
-                <p class="navbar-collapse navbar-text  navbar-right">Welcome,
-                    <a href="/user/" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
-                    <a href="/logout" class="navbar-link bg-danger">Exit</a>
-                </p>
-                <!-- {% else %} -->
-                <div class="navbar-collapse navbar-right">
-                    <a href="/login"><button class="btn btn-primary navbar-btn">Sign in</button></a>
-                    <a href="/register"><button class="btn btn-default navbar-btn">Register</button></a>
-                </div>
-                <!-- {% endif %} -->
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="想看啥搜啥">
-          </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+            <ul class="nav navbar-nav">
+                <li id="showkc"><a href="#">课程</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- {% if user %} -->
+                    <p class="navbar-collapse navbar-text  navbar-right">Welcome,
+                        <a href="/user/" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
+                        <a href="/logout" class="navbar-link bg-danger">Exit</a>
+                    </p>
+                    <!-- {% else %} -->
+                    <div class="navbar-collapse navbar-right">
+                        <a href="/login">
+                            <button class="btn btn-primary navbar-btn">Sign in</button>
+                        </a>
+                        <a href="/register">
+                            <button class="btn btn-default navbar-btn">Register</button>
+                        </a>
+                    </div>
+                    <!-- {% endif %} -->
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            </form>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
 
-  <!-- 主体 
-  =======================================================-->
-    <div class="container-fluid">
-      <div class="row">
-      <!-- 左侧
-      ======================================-->
+<!-- 主体
+=======================================================-->
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧
+        ======================================-->
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar placeholders">
-            <li><img class="img-circle" src="{{ userinfo.img }}" alt="image" width="140" height="140"></li>
-            <li>{{ userinfo.nickname }}</li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li id="show_lear" class="active"><a href="#">正在学习的课程 <!-- <span class="sr-only">(current)</span> --></a></li>
-            <li id="show_com"><a href="#">已完成的课程</a></li>
-            <li id="show_inf"><a href="#">个人信息</a></li>
-            <li id="chan_key"><a href="#">修改密码</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">还有啥</a></li>
-          </ul>
-        </div><!-- end左侧 -->
-      <!-- 右侧
-      ===================================================================-->
+            <ul class="nav nav-sidebar placeholders">
+                <li><img class="img-circle" src="{{ userinfo.img }}" alt="image" width="140" height="140"></li>
+                <li>{{ userinfo.nickname }}</li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li id="show_lear" class="active"><a href="#">正在学习的课程
+                    <!-- <span class="sr-only">(current)</span> --></a></li>
+                <li id="show_com"><a href="#">已完成的课程</a></li>
+                <li id="show_inf"><a href="#">个人信息</a></li>
+                <li id="chan_key"><a href="#">修改密码</a></li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li><a href="">还有啥</a></li>
+            </ul>
+        </div>
+        <!-- end左侧 -->
+        <!-- 右侧
+        ===================================================================-->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main mymain">
-        <!-- 正在学习的课程
-        ================================================================ -->
-          <div id="learning">
-              {% for course, process_num in course_in %}
-            <div class="media">
-              <div class="media-left">
-                <a href="#"><img class="media-object" src="{{ course.img }}" alt="F1" width="140" height="140"></a>
-              </div>
-              <div class="media-body">
-                <h2 class="media-heading">{{ course.name }}</h2>
-                <div class="progress mypro">
-                	<div class="progress-bar" role="progressbar" aria-valuenow='{{ process_num }}' aria-valuemin="0" aria-valuemax="100" style="width: {{ process_num }}%;">{{ process_num }}%</div>
-                </div>
-                <div class="text_center right"><a class="btn btn-lg btn-primary" href="/study_index/{{ course.id }}" role="button">继续学习</a></div>
-              </div>
+            <!-- 正在学习的课程
+            ================================================================ -->
+            <div id="learning">
+                {% for course, process_num in course_in %}
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#"><img class="media-object" src="{{ course.img }}" alt="F1" width="140"
+                                             height="140"></a>
+                        </div>
+                        <div class="media-body">
+                            <h2 class="media-heading">{{ course.name }}</h2>
+
+                            <div class="progress mypro">
+                                <div class="progress-bar" role="progressbar" aria-valuenow='{{ process_num }}'
+                                     aria-valuemin="0" aria-valuemax="100"
+                                     style="width: {{ process_num }}%;">{{ process_num }}%
+                                </div>
+                            </div>
+                            <div class="text_center right"><a class="btn btn-lg btn-primary"
+                                                              href="/study_index/{{ course.id }}" role="button">继续学习</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
             </div>
-            <hr>
-              {% endfor %}
-          </div>
-        <!-- 已经完成的课程
-        ================================================================ -->
-          <div id="completed">
-              {% for course, begin_time in course_out %}
-          	<div class="media">
-              <div class="media-left">
-                <a href="#"><img class="media-object" src="{{ course.img }}" alt="F3" width="140" height="140"></a>
-              </div>
-              <div class="media-body">
-                <h2 class="media-heading">{{ course.name }}</h2>
-                <!--<h3>史清华</h3>-->
-                <span class="kctime">学习时间：{{ begin_time }}</span>
-                <div class="text_center right"><a class="btn btn-lg btn-info" href="/study_index/{{ course.id }}" role="button">查看课程记录</a></div>
-              </div>
+            <!-- 已经完成的课程
+            ================================================================ -->
+            <div id="completed">
+                {% for course, begin_time in course_out %}
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#"><img class="media-object" src="{{ course.img }}" alt="F3" width="140"
+                                             height="140"></a>
+                        </div>
+                        <div class="media-body">
+                            <h2 class="media-heading">{{ course.name }}</h2>
+                            <!--<h3>史清华</h3>-->
+                            <span class="kctime">学习时间：{{ begin_time }}</span>
+
+                            <div class="text_center right"><a class="btn btn-lg btn-info"
+                                                              href="/study_index/{{ course.id }}"
+                                                              role="button">查看课程记录</a></div>
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
             </div>
-            <hr>
-            {% endfor %}
-          </div>
-        <!-- 个人信息 
-        =================================================================-->
-          <div id="personal_information">
-              <form ENCTYPE="multipart/form-data" action="/change_info" method="post">
-            <div class="row">
-              <div class="col-md-4" style="text-align:center"><br><br><br>
-                <img src="../static/img/F3.jpg" alt="F3" width="140" height="140" align="center"><br><br>
-                <a href="#" class="file">修改头像
-                  <input name="file1" type="file" accept="image/*">
-                </a>
-              </div>
-              <div class="col-md-8" style="text-align:center">
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>性别</p></label>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="sex" value="M">男
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="sex" value="F">女
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>生日</p></label>
-                  </div>
-                  <div class="col-md-5">
-                    <input name="birthday" id="birthday" type="date" class="form-control" placeholder="Text input" value="{{ userinfo.birthday }}"/>
-                  </div>
-                </div>
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>学校</p></label>
-                  </div>
-                    <div class="col-md-5">
-                      <input name="school" type="text" class="form-control" id="blank2" value="{{ userinfo.school }}">
-                    </div>
-                  </div>
+            <!-- 个人信息
+            =================================================================-->
+            <div id="personal_information">
+                <form ENCTYPE="multipart/form-data" action="/change_info" method="post" id="change_info_form">
                 <div class="row">
-                  <div class="col-md-5"></div>
-                  <div class="col-md-4">
-                    <input type="submit" class="btn btn-primary navbar-btn"></input>
-                  </div>
+                    <div class="col-md-4" style="text-align:center"><br><br><br>
+                        <img src="../static/img/F3.jpg" alt="F3" width="140" height="140" align="center"><br><br>
+                        <a href="#" class="file">修改头像
+                            <input id='file1' name="file1" type="file" accept="image/*">
+                        </a>
+                    </div>
+                    <div class="col-md-8" style="text-align:center">
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>性别</p></label>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" id="sex" name="sex" value="M" {% ifequal userinfo.sex 'M' %}checked{% endifequal %}>男
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" id="sex" name="sex" value="F" {% ifequal userinfo.sex 'F' %}checked{% endifequal %}>女
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>生日</p></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="birthday" id="birthday" type="date" class="form-control"
+                                       placeholder="Text input" value="{{ userinfo.birthday | date:"Y-m-d" }}"/>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>学校</p></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input name="school" type="text" class="form-control" id="school"
+                                       value="{{ userinfo.school }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6"></div>
+                            <div class="col-md-2">
+                                <button id='info_change' class="btn btn-primary navbar-btn">保存</button>
+                            </div>
+                        </div>
+                        <!--<div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-2">
+                                <button id='info_change' class="btn btn-primary navbar-btn">保存</button>
+                            </div>
+                        </div>-->
+                    </div>
                 </div>
-              </div>
+                </form>
             </div>
-              </form>
-          </div>
-        <!-- 修改密码
-        =================================================================-->
-          <div id="change_password">
-              <form action="/change_pass" method="POST">
-            <div class="row">
-              <div class="col-md-8" style="text-align:center">
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>旧密码</p></label>
-                  </div>
-                  <div class="col-md-5">
-                    <input type="password" class="form-control" id="blank3" name="old">
-                  </div>
+            <!-- 修改密码
+            =================================================================-->
+            <div id="change_password">
+                <form action="/change_pass" method="POST" id="change_pass_form">
+                <div class="row">
+                    <div class="col-md-8" style="text-align:center">
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>旧密码</p></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="password" class="form-control" id="blank3" name="old">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8" style="text-align:center">
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>新密码</p></label>
-                  </div>
-                  <div class="col-md-5">
-                    <input type="password" class="form-control" id="blank4" name="new1">
-                  </div>
+                <div class="row">
+                    <div class="col-md-8" style="text-align:center">
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>新密码</p></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="password" class="form-control" id="blank4" name="new1">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8" style="text-align:center">
-                <div class="row" style="padding: 15px">
-                  <div class="col-md-3">
-                    <label class="text-info myBox1"><p>再次输入密码</p></label>
-                  </div>
-                  <div class="col-md-5">
-                    <input type="password" class="form-control" id="blank5" name="new2">
-                  </div>
+                <div class="row">
+                    <div class="col-md-8" style="text-align:center">
+                        <div class="row" style="padding: 15px">
+                            <div class="col-md-3">
+                                <label class="text-info myBox1"><p>再次输入密码</p></label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="password" class="form-control" id="blank5" name="new2">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+                 <div class="row">
+                   <div class="col-md-6"></div>
+                   <div class="col-md-2">
+                    <button id='pass_change' class="btn btn-primary navbar-btn">保存</button>
+                   </div>
+                 </div>
+                   </form>
             </div>
-            <div class="row">
-              <div class="col-md-6"></div>
-              <div class="col-md-2">
-               <button type="submit" class="btn btn-primary navbar-btn">保存</button>
-              </div>
-            </div>
-              </form>
-            <script>
-              var old = document.querySelector("#blank3");
-              if(old == 123) {
+        </div>
+        <!-- end右侧 -->
 
-              }
-              var new1 = document.querySelector("#blank4");
-              var new2 = document.querySelector("#blank5");
-            </script>
-          </div>
-        </div><!-- end右侧 -->
-        
-      </div>
-    </div><!-- end主体 -->
+    </div>
+</div>
+<!-- end主体 -->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../static/js/bootstrap.min.js"></script>
-  </body>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../static/js/bootstrap.min.js"></script>
+</body>
 </html>

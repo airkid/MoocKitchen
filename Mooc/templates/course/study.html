@@ -13,6 +13,7 @@
     <script src="../static/js/bootstrap.min.js"></script>
     <script src="../static/js/jquery/jquery.min.js"></script>
     <script src="../static/js/pdf.js"></script>
+    <script src="../static/js/csrf.js"></script>
     <script src="../static/js/pdf.worker.js"></script>
     <script src="../static/js/study.js"></script>
 </head>
@@ -247,11 +248,29 @@
                   </ul>
             </div>
             <!-- =================随堂笔记====================== -->
-            <div id="mybj">
-                <textarea class="form-control" rows="20"></textarea>
+             <div id="mybj">
+                {% include './course/note.html' %}
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+            $(document).ready(function(){
+                    $('#note_submit').click(function(){
+                        var content = $("#user_content").val();
+                        course_id = {{course_id}};
+                        unit_cnt = {{unit_cnt}};
+                        $.ajax({
+                            type:'post',
+                            url:"/keepnote/",
+                            data:{'content':content,'course_id':course_id,'unit_cnt':unit_cnt},
+                            success:function(responseData){
+                                alert('笔记保存成功')
+                                $('#mybj').html(responseData);
+                            }
+                        })
+                    })
+            })
+    </script>
     <hr class="featurette-divider">
 </div>
 

@@ -51,20 +51,17 @@ $(document).ready(function () {
 
 
 $(document).ready(function () {
-    $("#pass_change").click(function () {
-        $('#change_pass_form').ajaxForm(
-            function (data, status) {
-                alert(data['message']);
-            });
-    });
+    $('#change_pass_form').ajaxForm(
+        function (data, status) {
+            alert(data['message']);
+        });
 });
 
 $(document).ready(function () {
-    $("#info_change").click(function () {
-        $('#change_info_form').ajaxForm(
-            function (data, status) {
-                alert(data['message']);
-                //把头像换成新的
-            });
-    });
+    $('#change_info_form').ajaxForm(
+        function (data, status) {
+            alert(data['message']);
+            //把头像换成新的
+            $('#user_img').src = data['user_img']
+        });
 });

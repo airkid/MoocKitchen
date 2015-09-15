@@ -1,4 +1,16 @@
-目前未解决的问题
-0,site-packages拼错了，修改地址是/MoocKitchen/index.wsgi
-1,settings.py DEBUG目前为True
-2,admin样式未设置 superuser未创建
+待完成
+0.点赞系统
+1.课程推荐系统
+2.留言板
+3.下载课件
+
+小问题
+0.Ajax返回的信息显示方式
+1.把选课的按钮直接换回<a>去掉外部<button>
+2.用户更换头像后的同步刷新
+
+
+讨论版
+点讨论区时请求数据，刷新内容
+点击回复时设定reference
+点击提交时，create_message,刷新内容

@@ -177,3 +177,12 @@ class Message(models.Model):
         else:
             message = Message.objects.get(id=self.reference)
             return message
+
+
+class UserNote(models.Model):
+    #根据用户，课程，单元保存笔记
+    user = models.ForeignKey(User,related_name='notes')
+    course = models.ForeignKey(Course,related_name='notes')
+    unit_counter = models.IntegerField(blank=True)
+    #笔记内容
+    content = models.CharField(max_length=200,blank=True)

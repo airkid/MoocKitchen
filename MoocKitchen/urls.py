@@ -35,4 +35,7 @@ urlpatterns = [
     url(r'^ttt$', views.ttt),
     url(r'^change_pass$', views.change_pass),
     url(r'^change_info$', views.change_info),
+    url(r'^create_message$', views.create_message),
+    url(r'^keepnote/$', views.keepnote),
+    url(r'^get_messages/$', views.get_messages),
 ]

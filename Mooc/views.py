@@ -11,8 +11,10 @@ import StringIO
 import random
 import datetime
 from os import environ
-from sae.ext.storage import monkey
+#from sae.ext.storage import monkey
 from django.http import JsonResponse
+from django.template import Context,loader
+from django.http import HttpResponse
 # Create your views here.
 STUDY_TIME_INF = 2999
 
@@ -107,7 +109,6 @@ def register(request):
             return ren2res('./user/register.html', request, {'registerform': registerform})
 
 @login_required
-@csrf_exempt
 def change_pass(request):
     old = str(request.POST.get('old'))
     new1 = str(request.POST.get('new1'))
@@ -132,7 +133,6 @@ def change_pass(request):
         return JsonResponse({'message':message})
 
 @login_required
-@csrf_exempt
 def change_info(request):
     sex = request.POST.get('sex')
     birthday = request.POST.get('birthday')
@@ -162,12 +162,11 @@ def change_info(request):
     except Exception:
         print(1)
     userinfo.save()
-    return JsonResponse({'message': u'个人信息修改成功！'})
+    return JsonResponse({'message': u'个人信息修改成功！', 'user_img': userinfo.img})
 
 @login_required
 def course_summary(request, cid):
-    # try:
-    if True:
+    try:
         servertime = datetime.date.today()
         course = Course.objects.get(id=cid)
         units = course.units.all().order_by('counter')
@@ -196,8 +195,8 @@ def course_summary(request, cid):
             message = u'暂无课程安排'
             return ren2res('./course/course_index.html', request,
                            {'click': click, 'course': course, 'units': units, 'message': message, 'unit_sum': unit_sum})
-    # except Exception:
-    # raise Http404
+    except Exception:
+        raise Http404
     if course is not None:
         result = StudyStatus.objects.filter(course=course, user=request.user)
         course_begintime = course.cur_time.begin_time
@@ -303,6 +302,12 @@ def study(request):
             # 返回前更新一下section的访问信息
             section_cnt = 1
             unit_cnt = obj_unit.counter
+            #------------------获取用户笔记--------------------------
+            try:
+                usernote = UserNote.objects.get(user_id=request.user.id,course=course,unit_counter=unit_cnt)
+            except Exception:
+                usernote=None
+            #--------------------------------------------------------
             studystatus = StudyStatus.objects.get(course=course, user=request.user)
             result = studystatus.quizstore.filter(unit_counter=unit_cnt, section_counter=section_cnt)
             if len(result) == 0:
@@ -315,7 +320,8 @@ def study(request):
             studystatus.last_section = max(int(studystatus.last_section), int(section.total_counter))
             studystatus.save()
             return ren2res('./course/study.html', request, {'section': section, 'video': video, 'pdf': pdf,
-                                                            'course': course, 'units': units, 'obj_unit': obj_unit})
+                                                            'course': course, 'units': units, 'obj_unit': obj_unit,
+                                                            'usernote':usernote,'course_id':course_id,'unit_cnt':unit_cnt,})
         unit_cnt = int(unit_cnt)
         section_cnt = request.GET.get('section_cnt')
         if section_cnt is None:
@@ -334,6 +340,12 @@ def study(request):
                 '/study/?cid=' + str(course_id) + '&unit_cnt=' + str(obj_unit.counter) + '&section_cnt=' + str(
                     tmp_section.counter))
 
+        #------------------获取用户笔记--------------------------
+        try:
+            usernote = UserNote.objects.get(user_id=request.user.id,course=course,unit_counter=unit_cnt)
+        except Exception:
+            usernote=None
+        #--------------------------------------------------------
         # 正常返回
         video = str(section.video)
         pdf = str(section.pdf)[5:]
@@ -353,7 +365,8 @@ def study(request):
         studystatus.last_section = max(int(studystatus.last_section), int(section.total_counter))
         studystatus.save()
         return ren2res('./course/study.html', request, {'section': section, 'video': video, 'pdf': pdf,
-                                                        'course': course, 'units': units, 'obj_unit': obj_unit})
+                                                        'course': course, 'units': units, 'obj_unit': obj_unit,
+                                                         'usernote':usernote,'course_id':course_id,'unit_cnt':unit_cnt})
 
 
 def study_index(request, cid):
@@ -498,22 +511,6 @@ def take_quiz(request, course_id, unit_cnt, section_cnt):
             raise Http404
     else:
         return HttpResponseRedirect('/')
-
-
-# @login_required
-# def choose_test(request, course_id):
-#     try:
-#         course = Course.objects.get(id=course_id)
-#         units = course.units.all()
-#         user = request.user
-#         unit = []
-#         result = StudyStatus.objects.filter(user=user, course=course)
-#         studystatus = result[0]
-#         for i in range(1, len(units) + 1):
-#             unit.append([course.units.get(counter=i), studystatus.teststore.filter(unit_counter=i)])
-#     except Exception:
-#         raise Http404
-#     return ren2res('./course/choose_test.html', request, {'course': course, 'course_id': course_id, 'units': unit})
 
 
 @login_required
@@ -758,18 +755,50 @@ def ttt(request):
             return ren2res('ttt.html', request, {'value': 'save failed'})
 
 @login_required
-@csrf_exempt
 def create_message(request):
     servertime = datetime.date.today()
     user = request.user
+    print(user)
     course_id = request.POST.get('course_id')
+    print(course_id)
     course = Course.objects.get(id=course_id)
+    print(course)
     content = str(request.POST.get('content'))
+    print(content)
     reference_id = request.POST.get('reference_id')
     if reference_id is None:
         reference_id = -1
-    floor_counter = len(Message.objects.filter(course=course))+1
+    print(reference_id)
+    floor_counter = int(len(Message.objects.all().filter(course=course)))+1
+    print(floor_counter)
     message = Message(user=user, course=course, reference=reference_id, content=content, floor=floor_counter,
                       publishTime=servertime)
     message.save()
-    return JsonResponse({'message': message})
+    return JsonResponse({'message': u'上传成功'})
+
+@login_required
+def keepnote(request):
+    if request.is_ajax():
+        t = loader.get_template('./course/note.html')
+    course_id = request.POST.get('course_id')
+    course = Course.objects.get(id=course_id)
+    unit_cnt = request.POST.get('unit_cnt')
+    note_content = request.POST.get('content')
+    try:
+        note = UserNote.objects.get(user_id=request.user.id,course=course,unit_counter=unit_cnt)
+        note.content=note_content
+    except Exception:
+        note = UserNote(course=course,unit_counter=unit_cnt,user_id=request.user.id,content=note_content)
+    note.save()
+    content_html = t.render(Context({'usernote': note}))
+    return HttpResponse(content_html)
+
+@login_required
+def get_messages(request):
+    if request.is_ajax():
+        t = loader.get_template('./course/message.html')
+    course_id = request.GET.get('course_id')
+    course = Course.objects.get(id=course_id)
+    messages = course.messages.all()
+    content_html = t.render(Context({'messages': messages}))
+    return HttpResponse(content_html)

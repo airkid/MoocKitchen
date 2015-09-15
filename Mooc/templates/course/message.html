@@ -1,0 +1,86 @@
+<h3>课程评论区</h3><br>
+
+<p>大家的心声都在这里</p>
+{% for message in messages %}
+    {% if message.get_reference %}
+        <div class="row">
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-1">
+                                <p>#{{ message.floor }}</p>
+                            </div>
+                            <div class="col-md-11">
+                                {{ message.user.info.nickname }}发表于{{ message.publishTime | date:"Y-m-d" }}<br>------------------------------
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-1">
+                                <p>回复</p>
+                            </div>
+                            <div class="col-md-10">
+                                <p>{{ message.get_reference.user.info.nickname }}：{{ message.get_reference.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img class="avatar" src="{{ message.user.info.img }}" width="60px" height="60px">
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ message.content }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="#">
+                                    <button class="btn btn-primary navbar-btn"
+                                            onclick=setReference({{ message.floor }})>回复
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-1">
+                                <p>#{{ message.floor }}</p>
+                            </div>
+                            <div class="col-md-11">
+                                {{ message.user.info.nickname }}发表于{{ message.publishTime | date:"Y-m-d" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img class="avatar" src="{{ message.user.info.img }}" width="60px" height="60px">
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ message.content }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="#">
+                                    <button class="btn btn-primary navbar-btn"
+                                            onclick=setReference({{ message.floor }})>回复
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+</script>

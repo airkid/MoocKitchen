@@ -665,11 +665,10 @@ def member(request):
 def get_file(request):
     url = str(request.GET.get('url'))
     f = urllib2.urlopen(url)
-    # data = StringIO.StringIO(f.read())
     data = f.read()
-    # monkey.patch_all()
-    # file = open(url, 'rb')
     response = FileResponse(data)
+    # response['Content-Type'] = 'application/octet-stream'
+    # response['Content-Disposition'] = 'attachment;filename="test.pdf"'
     return response
 
 
@@ -802,3 +801,22 @@ def get_messages(request):
     messages = course.messages.all()
     content_html = t.render(Context({'messages': messages}))
     return HttpResponse(content_html)
+
+@login_required
+def set_likes(request):
+    course_id = request.GET.get('course_id')
+    course = Course.objects.get(id=course_id)
+    user = request.user
+    query_result = LikeUserCourse.objects.filter(user=user, course=course)
+    if len(query_result) == 0:
+        new = LikeUserCourse(user=user, course=course)
+        new.save()
+        course.likeCounter += 1
+        html_data = '+1'
+    else:
+        old = query_result[0]
+        old.delete()
+        course.likeCounter -= 1
+        html_data = '-1'
+    course.save()
+    return JsonResponse({'likeCounter': course.likeCounter, 'html_data': html_data})

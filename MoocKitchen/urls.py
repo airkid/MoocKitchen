@@ -38,4 +38,5 @@ urlpatterns = [
     url(r'^create_message$', views.create_message),
     url(r'^keepnote/$', views.keepnote),
     url(r'^get_messages/$', views.get_messages),
+    url(r'^set_likes/$', views.set_likes),
 ]

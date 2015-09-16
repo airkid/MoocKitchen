@@ -39,7 +39,7 @@ else:
     MYSQL_HOST_S = sae.const.MYSQL_HOST_S
     MYSQL_PORT = sae.const.MYSQL_PORT
 
-
+DEFAULT_CHARSET = 'utf-8'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 

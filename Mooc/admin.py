@@ -14,5 +14,4 @@ admin.site.register(QuizStore)
 admin.site.register(TestStore)
 admin.site.register(StudyStatus)
 admin.site.register(Message)
-
-search_fields = ['Section__counter', 'Section__total_counter']
+admin.site.register(LikeUserCourse)

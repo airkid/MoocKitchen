@@ -19,11 +19,13 @@ class UserInfo(models.Model):
 class Course(models.Model):
     # 课程名称
     name = models.CharField(max_length=30)
+    subTitle = models.CharField(max_length=30, default="")
     # 课程简介
     summary = models.CharField(max_length=200)
     announcement = models.CharField(max_length=200, blank=True, default=u'暂无公告')
     img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/course/default')
     teacher = models.CharField(max_length=20, default='NoTeacher')
+    likeCounter = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -181,8 +183,16 @@ class Message(models.Model):
 
 class UserNote(models.Model):
     #根据用户，课程，单元保存笔记
-    user = models.ForeignKey(User,related_name='notes')
+    user = models.ForeignKey(User, related_name='notes')
     course = models.ForeignKey(Course,related_name='notes')
     unit_counter = models.IntegerField(blank=True)
     #笔记内容
-    content = models.CharField(max_length=200,blank=True)
+    content = models.CharField(max_length=200, blank=True)
+
+
+class LikeUserCourse(models.Model):
+    user = models.ForeignKey(User, related_name='likes')
+    course = models.ForeignKey(Course, related_name='likes')
+
+    def __unicode__(self):
+        return str(self.user.info.nickname).decode('utf8')+str(self.course).decode('utf8')

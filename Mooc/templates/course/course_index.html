@@ -8,8 +8,6 @@
     <title>课程主页</title>
 
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="http://craftpip.github.io/jquery-confirm/css/jquery-confirm.css" rel="stylesheet">
     <script src="../static/js/ie-emulation-modes-warning.js"></script>
     <script src="../static/js/jquery/jquery.min.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
@@ -71,11 +69,59 @@
         <div class="col-xs-12 col-sm-9 myleft">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h1>{{ course.name }}</h1>
+                    <div class="left"><h1>{{ course.name }}</h1></div>
+                    <br>
+
+                    <div align="right" class="right">
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        <a class="zan" href="#" id="zan">
+                            <i></i>
+                            <span id="likeCounter">{{ course.likeCounter }}</span></a>
+                    </div>
+                    <br><br>
+                    <script type="text/javascript">
+                        $(document).ready(function (e) {
+                            $('#zan').click(function () {
+                                //Ajax请求
+                                course_id = {{ course.id }};
+                                $.ajax({
+                                    type: 'get',
+                                    url: "/set_likes/",
+                                    data: {'course_id': course_id},
+                                    success: function (responseData) {
+                                        var seal = $('#zan');
+                                        var left = parseInt($(seal).offset().left),
+                                                top = parseInt($(seal).offset().top) - 10,
+                                                obj = $(seal);
+                                        var content = '<div class="zans"><b>'+responseData['html_data']+'<\/b><\/div>'
+                                        $(seal).append(content);
+                                        $('.zans').css({
+                                            'position': 'fixed',
+                                            'z-index': '1',
+                                            'color': '#C30',
+                                            'left': left + 'px',
+                                            'top': top + 'px'
+                                        }).animate({
+                                            top: top - 10
+
+                                        }, 'slow', function () {
+                                            $('.zans').fadeIn('fast').remove();
+                                            //var Num = parseInt(obj.find('span').text());
+                                            //Num++;
+                                            obj.find('span').text(responseData['likeCounter']);
+
+                                        });
+                                        return false;
+                                    }
+                                })
+                            });
+                        });
+                    </script>
                     <hr class="featurette-divider">
                     <h3>课程简介：</h3>
 
                     <p>{{ course.summary }}</p>
+
                     <h3>课程单元：</h3>
                     {% for unit in units %}
                         <p>{{ unit.title }}</p>
@@ -116,12 +162,20 @@
                         </script>
                     {% endif %}
 
-                {% if click %}
+                    {% if click %}
                         {% if studystatus %}
-                            <div class="text_center"><button class="btn btn-lg btn-success"role="button" value="button"  ><a href='/study_index/{{ course.id }}'>{{ message }}</a></button></div>
+                            <div class="text_center">
+                                <button class="btn btn-lg btn-success" role="button" value="button"><a
+                                        href='/study_index/{{ course.id }}'>{{ message }}</a></button>
+                            </div>
                         {% else %}
-                            <div class="text_center"><button class="btn btn-lg btn-success" role="button" value="button"  ><a href="//" id='click_button' onclick="check()">{{ message }}</a></button></div>
-                            <div class="mytext">重新选课后</div>
+                            <div class="text_center">
+                                <button class="btn btn-lg btn-success" role="button" value="button"><a href="//"
+                                                                                                       id='click_button'
+                                                                                                       onclick="check()">{{ message }}</a>
+                                </button>
+                            </div>
+                            <div class="mytext"></div>
                         {% endif %}
                     {% else %}
                         <div class="text_center"><span class="btn btn-lg btn-primary" role="button"
@@ -138,7 +192,7 @@
     <label>{{ course.summary }}</label><br>
     {% for unit in units %}
         <label>{{ unit.counter }}{{ unit.title }}</label><br>
-    {% endfor %} -->
+    {% endfor %} -->ç
 
 <!-- FOOT
 =========================================================== -->

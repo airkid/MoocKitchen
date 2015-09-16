@@ -9,11 +9,14 @@
 
     <title>MOOC</title>
 
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/static/js/ie-emulation-modes-warning.js"></script>
-    <link href="/static/css/index.css" rel="stylesheet">
-    <script src="/static/js/jquery/jquery.min.js"></script>
-    <script src="/static/js/index.js"></script>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/css/index2.css">
+
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+    <script src="../static/js/jquery/jquery.min.js"></script>
+    <script src="../static/js/index.js"></script>    
+    <script src="../static/js/index2.js"></script>
   </head>
   <body>
   <!-- 导航栏
@@ -31,20 +34,20 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#" id="showkc">课程</a></li>
+            <li id="showkc"><a href="#">课程</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {% if user %}
+            <!-- {% if user %} -->
                 <p class="navbar-collapse navbar-text  navbar-right">Welcome,
-                    <a href="/user/" class="navbar-link bg-info">{{ userinfo.nickname }} </a>
+                    <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
                     <a href="/logout" class="navbar-link bg-danger">Exit</a>
                 </p>
-                {% else %}
+                <!-- {% else %} -->
                 <div class="navbar-collapse navbar-right">
                     <a href="/login"><button class="btn btn-primary navbar-btn">Sign in</button></a>
                     <a href="/register"><button class="btn btn-default navbar-btn">Register</button></a>
                 </div>
-                {% endif %}
+                <!-- {% endif %} -->
           </ul>
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="想看啥搜啥">
@@ -60,7 +63,7 @@
     <div id="home">
       <!-- 幻灯片
       ================================================== -->
-      <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
         <!-- Indicators -->
         <ol class="carousel-indicators">
           <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -79,22 +82,22 @@
             </div>
           </div>
           <div class="item">
-            <img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Second slide">
+            <img class="second-slide" src="../static/img/K2.png" alt="Second slide">
             <div class="container">
               <div class="carousel-caption">
-                <h1>课程2</h1>
-                <p>这里是介绍</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+                <h1>商务英语口语</h1>
+                <p>拒接哑巴英语，30天课程，学一口流利的口语</p>
+                <p><a class="btn btn-lg btn-primary" href="#" role="button">查看详情</a></p>
               </div>
             </div>
           </div>
           <div class="item">
-            <img class="third-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Third slide">
+            <img class="third-slide" src="../static/img/K3.png" alt="Third slide">
             <div class="container">
               <div class="carousel-caption">
-                <h1>课程3</h1>
-                <p>继续介绍</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">（づ￣3￣）づ╭❤～</a></p>
+                <h1>西方经济学</h1>
+                <p>资本主义下的经济原理理论</p>
+                <p><a class="btn btn-lg btn-primary" href="#" role="button">我要学习</a></p>
               </div>
             </div>
           </div>
@@ -111,63 +114,103 @@
       <!-- 特色&课程
       ================================================== -->
       <div class="container marketing">
-        <!-- 特色介绍 -->
-        <div class="row">
-          <div class="col-lg-4">
-            <img class="img-circle" src="../static/img/F1.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>交流讨论</h2>
-            <p>这里是好处啦啦介绍啦啦啦啦啦~</p>
-            <p><a class="btn btn-default" href="#" role="button">异世界入口 &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4">
-            <img class="img-circle" src="../static/img/F2.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>据说有弹幕</h2>
-            <p>据说有弹幕啊好期待呢呀哈哈哈~</p>
-            <p><a class="btn btn-default" href="#" role="button">通向哪儿啊我也不造 &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4">
-            <img class="img-circle" src="../static/img/F3.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>资源共享</h2>
-            <p>一起学习嘛资料当然要共享！</p>
-            <p><a class="btn btn-default" href="#" role="button">链到百度云去？ &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
+        <!-- ============圆圈=============== -->
+        <div class="feature-enc section-divider clearfix">
+          <h2 class="main-title text-center" data-sr='enter bottom'>欢迎来到KitchenAir</h2>
+          <h4 class="sub-title text-center" data-sr='enter bottom'>注册登陆 &rarr; 选择课程时间 &rarr; 学习测试 &rarr; 完成课程</h4>
 
-        <!-- 热门课程 -->
-        <hr class="featurette-divider">
-        <div class="row featurette">
-          <div class="col-md-7">
-            <h2 class="featurette-heading">课程1 <span class="text-muted">--老师1</span></h2>
-            <p class="lead">你说上什么课呢，躺在沙发上吃零食看电影多开心</p>
+          <div class="feature-row-1 text-center" data-sr='over 0.4s, move 50px'>
+            <div class="sep-feature-sec">
+              <div class="feature-circle market">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title market">资源免费下载</h4>
+              <p class="feature-exp">所有的视频以及课程PDF均可免费下载</p>
+            </div>
+
+            <div class="sep-feature-sec">
+              <div class="feature-circle product">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title product">同步在线PDF</h4>
+              <p class="feature-exp">我们设置了与课程同步的PDF，视频电子书随意切换</p>
+            </div>
+
+            <div class="sep-feature-sec">
+              <div class="feature-circle customer">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title customer">随堂笔记</h4>
+              <p class="feature-exp">边看视频边做课堂笔记，便捷又高效</p>
+            </div>
           </div>
-          <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="../static/img/K1.jpg" alt="Generic placeholder image">
+
+          <div class="feature-row-2 text-center" data-sr='over 0.4s, move 50px,spin 45deg'>
+            <div class="sep-feature-sec">
+              <div class="feature-circle competition">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title competition">在线课后练习</h4>
+              <p class="feature-exp">每课配备相应课堂练习与测试，在线答题，保存试题，随时复习</p>
+            </div>
+
+            <div class="sep-feature-sec">
+              <div class="feature-circle pricing">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title pricing">灵活课程时间</h4>
+              <p class="feature-exp">每课均有多个开课时间可供选择，自由选取时间</p>
+            </div>
+
+            <div class="sep-feature-sec">
+              <div class="feature-circle delivery">
+                <p class="feature-img"></p>
+              </div>
+              <h4 class="feature-title delivery">交流与讨论</h4>
+              <p class="feature-exp">讨论区里与其他同学交流讨论</p>
+            </div>
           </div>
         </div>
-        <hr class="featurette-divider">
-        <div class="row featurette">
-          <div class="col-md-7 col-md-push-5">
-            <h2 class="featurette-heading">课程2 <span class="text-muted">--老师2</span></h2>
-            <p class="lead">我想吃薯条</p>
+        <!-- ============图=============== -->
+        <div class="intro-main-enc section-divider clearfix">
+          <div class="pull-left intro-content-sec">
+            <h3 class="intro-title">我们只专注MOOC</h3>
+            <p class="intro-explain">KitchenAir只做<strong>最专注的MOOC</strong>平台。在这里，我们只专注开发一切能有助于您学习的功能，不随意添加不必要的辅助功能，让你更专注于课程本身。</p>
           </div>
-          <div class="col-md-5 col-md-pull-7">
-            <img class="featurette-image img-responsive center-block" src="../static/img/K2.jpg" alt="Generic placeholder image">
-          </div>
-        </div>
-        <hr class="featurette-divider">
-        <div class="row featurette">
-          <div class="col-md-7">
-            <h2 class="featurette-heading">课程3 <span class="text-muted">--老师3</span></h2>
-            <p class="lead">我没话编了……快写份文案……</p>
-          </div>
-          <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="../static/img/K3.jpg" alt="Generic placeholder image">
+          <div class="pull-right intro-screenshot-sec">
+            <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
+              <img alt="Clarity" class="clarity-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/clarity-aae26fc55ff2fc198e8f80e29ea7a43b.png" />
+            </div>
           </div>
         </div>
-        <hr class="featurette-divider">
-        <!-- end热门课程 -->      
-      </div><!-- /.container -->
-    </div>
+
+        <div class="intro-main-enc section-divider clearfix">
+          <div class="pull-right intro-content-sec time-c-sec">
+            <h3 class="intro-title">做最好的用户体验</h3>
+            <p class="intro-explain">KitchenAir的前端设计师们致力于开发出<strong>更美观流畅的用户界面</strong>，我们的目标是：更简洁漂亮的界面、更完善具体的功能，让您在学习课程的过程中保持一份美好心情。</p>
+          </div>
+          <div class="pull-left intro-screenshot-sec time-ss-sec">
+            <div class="screeenshot" data-sr="enter left, over 0.6s, move 150px">
+              <img alt="Time" class="time-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/time-ffabc10b7b222ddc2ed9867dfe5effe0.png" />
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-main-enc section-divider clearfix">
+          <div class="pull-left intro-content-sec">
+            <h3 class="intro-title">我们仍在努力</h3>
+            <p class="intro-explain"><strong class="mini-title">感谢您选择<strong>KitchenAir</strong>。</strong>我们知道有很多团队在开发MOOC并且做的都很好，非常感谢您选择了<strong>我们团队的MOOC</strong>，我们仍在不停努力，为了用户们更好的体验，无论是我们的前端设计师还是后台工程师都将为打造给您带来更好体验的MOOC而<strong>不断努力</strong>，希望您继续支持我们！<br><br><strong>让我们一起加油！:)</strong></p>
+          </div>
+          <div class="pull-right intro-screenshot-sec">
+            <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
+              <img alt="Money" class="money-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/money-c4d666521fce31af9647b2610dae601b.png" />
+            </div>
+          </div>
+        </div>
+        
+
+      </div><!-- end/.container -->
+    </div><!-- end/home -->
 
     <!-- 课程
     ========================================================== -->
@@ -179,24 +222,16 @@
             <h1>欢迎同学们</h1>
             <p>这里是Kitchen Air为您提供的MOOC课程，根据您的喜好选择吧~</p>
           </div>
-            {% for course in courses %}
           <div class="row">
-            <!--
-            <div class="col-xs-6 col-lg-4">
-              <img class="img-circle" src="../static/img/F2.jpg" alt="Generic placeholder image" width="140" height="140">
-              <h2>课程1</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">查看详情 &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
+          {% for course in courses %}
             <div class="col-xs-6 col-lg-4">
               <img class="img-circle" src="{{ course.img }}" alt="Generic placeholder image" width="140" height="140">
               <h2>{{ course.name }}</h2>
-              <p>{{ course.summary }}</p>
+              <p>{{ course.subTitle }}</p>
               <p><a class="btn btn-default" href="/course/{{ course.id }}" role="button">查看详情 &raquo;</a></p>
             </div><!--/.col-xs-6.col-lg-4-->
-
+          {% endfor %}  
           </div><!--end课程列表-->
-            {% endfor %}
           <br>
           <!-- 分页 -->
           <nav>
@@ -233,9 +268,9 @@
     </footer>
     
   <!-- script
-  =========================================================== -->    
-    <script src="{{ STATIC_URL }}/static/js/bootstrap.min.js"></script>
-    <script src="//cdn.bootcss.com/holder/2.8.0/holder.min.js"></script>
+  =========================================================== -->   
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/holder.min.js"></script> 
     <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>

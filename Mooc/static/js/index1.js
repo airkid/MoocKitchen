@@ -26,6 +26,10 @@ $(function () {
     var accordion = new Accordion($('#accordion'), false);
 });
 
+function setReference(floorId) {
+                        $('#reference_id').val(floorId);
+                    }
+
 //function getMessage() {
 //    course_id = {{course_id}};
 //    $.ajax({
@@ -37,9 +41,7 @@ $(function () {
 //        }
 //    })
 //}
-function setReference(floorId) {
-                        $('#reference_id').val(floorId);
-                    }
+
 //$(document).ready(function () {
 //    $('#message_form').ajaxForm(
 //        function (data, status) {

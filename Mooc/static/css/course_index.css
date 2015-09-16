@@ -5,6 +5,12 @@ body {
   font-family: "微软雅黑";
   color: #5a5a5a;
 }
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
 
 .mycontainer {
 	padding-top: 40px;
@@ -40,4 +46,10 @@ color: #fff;
 .btn > a:active {
 text-decoration: none;
 color: #fff;
+}
+.mytext {
+	text-align: center;
+	margin-left: 60px;
+	margin-right: 60px;
+	color: red;
 }

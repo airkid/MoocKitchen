@@ -47,7 +47,7 @@ DEFAULT_CHARSET = 'utf-8'
 SECRET_KEY = 'j25%%awr4-@25wn$34@owq$ht2fx$1q+ct^4-2m%mq7m$!#2xc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',]
 

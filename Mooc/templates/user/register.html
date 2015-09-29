@@ -24,20 +24,20 @@
             {% csrf_token %}
             <div class="theLoginArea" id="loginBox">
                 <p style="position: relative;">
-                    <label for="LoginForm_email">邮箱：</label>
+                    <label for="LoginForm_email">邮箱：{%if username_error%}{{username_error}}{%endif%}</label>
                     <input placeholder="请输入您的邮箱" name="username" id="LoginForm_email" type="text" maxlength="255"/>
                     <span>请输入您的邮箱</span>
                 </p>
 
                 <p style="position: relative;">
-                    <label for="LoginForm_password">密码：</label>
+                    <label for="LoginForm_password">密码：{%if password1_error%}{{password1_error}}{%endif%}</label>
                     <input placeholder="请输入您的密码" name="password1" id="LoginForm_password" type="password"
                            maxlength="16"/>
                     <span>请输入您的密码</span>
                 </p>
 
                 <p style="position: relative;">
-                    <label for="LoginForm_password">确认密码：</label>
+                    <label for="LoginForm_password">确认密码：{%if password2_error%}{{password2_error}}{%endif%}</label>
                     <input placeholder="再次输入密码" name="password2" id="LoginForm_password" type="password"
                            maxlength="16"/>
                     <span>请输入您的密码</span>
@@ -55,14 +55,20 @@
                     </div>
                 </div>
             </div>
-            <div class="theRegArea fixRegHeight" id="reg_reg">
+            <!--<div class="theRegArea fixRegHeight" id="reg_reg">-->
+                <!--<a class="apply_reg" href="#"></a> <br/>-->
+
+                <!--<h2>已经有账号？</h2> <br/>-->
+                <!--<a class="reg_login" href="/login/"></a>-->
+            <!--</div>-->
+        </form>
+        <div id="error"><i class="glyphicon glyphicon-remove-circle"></i> {{ registerform.errors }}</div>
+        <div class="theRegArea fixRegHeight" id="reg_reg">
                 <a class="apply_reg" href="#"></a> <br/>
 
                 <h2>已经有账号？</h2> <br/>
                 <a class="reg_login" href="/login/"></a>
             </div>
-        </form>
-        <div id="error"><i class="glyphicon glyphicon-remove-circle"></i> {{ registerform.errors }}</div>
     </div>
 </div>
 </body>

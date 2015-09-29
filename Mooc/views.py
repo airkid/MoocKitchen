@@ -33,8 +33,28 @@ def ren2res(template, request, dic={}):
 
 
 def home(request):
-    courses = Course.objects.all().order_by('id')
-    return ren2res('index.html', request, {'courses': courses})
+    courses = list(Course.objects.all().order_by('id')[0:6])
+    if Course.objects.all().count() > len(courses):
+        Flag = True
+    else:
+        Flag = False
+    courseclass = 'all'
+    number=2
+    courses_num=[]
+    for i in range(0,len(courses)):
+        if((i+1)%3 == 1):
+            courses_num.append([courses[i],0])
+        elif ((i+1)%3 == 2):
+            courses_num.append([courses[i],-1])
+        else:
+            courses_num.append([courses[i],1])
+    #推荐课程
+    str = ['first','second','third']
+    course_like = list(Course.objects.all().order_by('-likeCounter')[0:3])
+    courses_like = []
+    for i in range(0,3):
+        courses_like.append([course_like[i],str[i]])
+    return ren2res('index.html', request, {'courses_num': courses_num,'courseclass':courseclass,'number':number,'Flag':Flag,'courses_like':courses_like,})
 
 
 def login(request):
@@ -58,9 +78,19 @@ def login(request):
             username = loginform.cleaned_data['username']
             password = loginform.cleaned_data['password']
             user = auth.authenticate(username=username, password=password)
+
+            print(request.META.get('HTTP_REFERER'))
+            str_list = request.META.get('HTTP_REFERER').split('/')
+            str_http = ''
+            k=0
+            for i in range(0,len(str_list)):
+                if str_list[i] == '?next=':
+                    k=1
+                elif k:
+                    str_http += '/'+str_list[i]
             if user is not None:
                 auth.login(request, user)
-                return HttpResponseRedirect(request.session['login_from'])
+                return HttpResponseRedirect(str_http)
             else:
                 # 按说不会到这一步，如果到了就是写错了
                 #这一步应该是用户名，密码不匹配才执行吧
@@ -106,7 +136,23 @@ def register(request):
             print('error')
             registerform.password1 = ''
             registerform.password2 = ''
-            return ren2res('./user/register.html', request, {'registerform': registerform})
+            try:
+                username_error = str(registerform.errors['username'])[26:-10]
+            except:
+                username_error=None;
+
+            try:
+                password1_error = str(registerform.errors['password1'])[26:-10]
+            except:
+                password1_error=None;
+
+            try:
+                password2_error = str(registerform.errors['password2'])[26:-10]
+            except:
+                password2_error=None;
+            registerform.errors.clear()
+            return ren2res('./user/register.html', request, {'registerform': registerform,'username_error':username_error,
+                                                                'password1_error':password1_error,'password2_error':password2_error})
 
 @login_required
 def change_pass(request):
@@ -166,7 +212,8 @@ def change_info(request):
 
 @login_required
 def course_summary(request, cid):
-    try:
+    #try:
+    if True:
         servertime = datetime.date.today()
         course = Course.objects.get(id=cid)
         units = course.units.all().order_by('counter')
@@ -195,8 +242,8 @@ def course_summary(request, cid):
             message = u'暂无课程安排'
             return ren2res('./course/course_index.html', request,
                            {'click': click, 'course': course, 'units': units, 'message': message, 'unit_sum': unit_sum})
-    except Exception:
-        raise Http404
+    # except Exception:
+    #     raise Http404
     if course is not None:
         result = StudyStatus.objects.filter(course=course, user=request.user)
         course_begintime = course.cur_time.begin_time
@@ -216,7 +263,7 @@ def course_summary(request, cid):
                 click = False
                 message = u'暂无选课安排'
                 return ren2res('./course/course_index.html', request,
-                               {'click': click, 'time_list': time_list, 'course': course, 'units': units,
+                                {'click': click, 'time_list': time_list, 'course': course, 'units': units,
                                 'message': message, 'times': times, 'unit_sum': unit_sum})
         else:
             # 选了这门课了
@@ -244,14 +291,14 @@ def course_summary(request, cid):
                     click = False
                     message = u'等待开课'
                     return ren2res('./course/course_index.html', request,
-                                   {'click': click, 'course': course, 'units': units, 'message': message,
+                                    {'click': click, 'course': course, 'units': units, 'message': message,
                                     'studystatus': studystatus, 'unit_sum': unit_sum})
                 else:
                     # 可以学习
                     click = True
                     message = u'开始学习'
                     return ren2res('./course/course_index.html', request,
-                                   {'click': click, 'course': course, 'units': units, 'message': message,
+                                     {'click': click, 'course': course, 'units': units, 'message': message,
                                     'studystatus': studystatus, 'unit_sum': unit_sum})
     else:
         raise Http404
@@ -667,12 +714,28 @@ def get_file(request):
     f = urllib2.urlopen(url)
     data = f.read()
     response = FileResponse(data)
-    # response['Content-Type'] = 'application/octet-stream'
-    # response['Content-Disposition'] = 'attachment;filename="test.pdf"'
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="test.pdf"'
     return response
 
 
+def download(request):
+    url = str(request.GET.get('url'))
+    name = request.GET.get('name')
+    f = urllib2.urlopen(url)
+    data = f.read()
+    response = FileResponse(data)
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="'+name+'.pdf"'
+    print(name)
+    return response
+
+
+
+@login_required
 def ttt(request):
+    if not request.user.has_perm('Mooc.can_change_user'):
+        raise Http404
     STORAGE_URL='http://moockitchen-mooc.stor.sinaapp.com/'
     if request.method == 'GET':
         return ren2res('ttt.html', request, {})
@@ -757,19 +820,13 @@ def ttt(request):
 def create_message(request):
     servertime = datetime.date.today()
     user = request.user
-    print(user)
     course_id = request.POST.get('course_id')
-    print(course_id)
     course = Course.objects.get(id=course_id)
-    print(course)
-    content = str(request.POST.get('content'))
-    print(content)
+    content = request.POST.get('content')
     reference_id = request.POST.get('reference_id')
     if reference_id is None:
         reference_id = -1
-    print(reference_id)
     floor_counter = int(len(Message.objects.all().filter(course=course)))+1
-    print(floor_counter)
     message = Message(user=user, course=course, reference=reference_id, content=content, floor=floor_counter,
                       publishTime=servertime)
     message.save()
@@ -777,6 +834,7 @@ def create_message(request):
 
 @login_required
 def keepnote(request):
+    print('innote')
     if request.is_ajax():
         t = loader.get_template('./course/note.html')
     course_id = request.POST.get('course_id')
@@ -798,7 +856,7 @@ def get_messages(request):
         t = loader.get_template('./course/message.html')
     course_id = request.GET.get('course_id')
     course = Course.objects.get(id=course_id)
-    messages = course.messages.all()
+    messages = course.messages.all().order_by('floor')
     content_html = t.render(Context({'messages': messages}))
     return HttpResponse(content_html)
 
@@ -820,3 +878,77 @@ def set_likes(request):
         html_data = '-1'
     course.save()
     return JsonResponse({'likeCounter': course.likeCounter, 'html_data': html_data})
+
+def getCourseClass(request):
+    #根据courseclass获取课程的类别
+    #根据number判断加载课程的数量
+    #根据Flag判断是否需要加载更多的按钮
+    if request.is_ajax():
+        t = loader.get_template('courseclass.html')
+    courseclass = request.GET.get('content_class')
+    search_text = request.GET.get('content_text')
+    number = request.GET.get('number')
+    if number is None:
+        number=1
+    else:
+        number=int(number)
+    if search_text=="" or search_text is None:
+        if courseclass=='all':
+            courses = list(Course.objects.all()[0:6*number])
+            if Course.objects.all().count() > len(courses):
+                Flag = True
+            else:
+                Flag = False
+        else:
+            courses = list(Course.objects.filter(courseClass=courseclass)[0:6*number])
+            if Course.objects.filter(courseClass=courseclass).count() > len(courses):
+                Flag = True
+            else:
+                Flag = False
+    elif courseclass=="":
+            courses = list(Course.objects.filter(name__icontains=search_text)[0:6*number])
+            if Course.objects.filter(name__icontains=search_text).count() > len(courses):
+                Flag = True
+            else:
+                Flag = False
+    courses_num=[]
+    for i in range(0,len(courses)):
+        if((i+1)%3 == 1):
+            courses_num.append([courses[i],0])
+        elif ((i+1)%3 == 2):
+            courses_num.append([courses[i],-1])
+        else:
+            courses_num.append([courses[i],1])
+    number=number+1
+    if search_text=="" or  search_text is None:
+        content_html = t.render(Context({'courses_num':courses_num,'courseclass':courseclass,'number':number,'Flag':Flag}))
+    elif courseclass=="":
+        content_html = t.render(Context({'courses_num':courses_num,'search_text':search_text,'number':number,'Flag':Flag}))
+    return HttpResponse(content_html)
+
+def search(request):
+    # if request.is_ajax():
+    #     t = loader.get_template('./course/search.html')
+    data = request.GET.get('search_text')
+    courses = list(Course.objects.filter(name__icontains=data)[0:6])
+    if Course.objects.filter(name__icontains=data).count() > len(courses):
+        Flag = True
+    else:
+        Flag = False
+    search_text = data
+    print(search_text)
+    number=2
+    courses_num=[]
+    for i in range(0,len(courses)):
+        if((i+1)%3 == 1):
+            courses_num.append([courses[i],0])
+        elif ((i+1)%3 == 2):
+            courses_num.append([courses[i],-1])
+        else:
+            courses_num.append([courses[i],1])
+    # content_html = t.render(Context({{'courses_num': courses_num,'courseclass':courseclass,
+    #                                                  'number':number,'Flag':Flag,}}))
+    print("Hello++++++++++++++")
+    # return HttpResponse(content_html)
+    return ren2res('./course/search.html', request, {'courses_num': courses_num,'search_text':search_text,
+                                                     'number':number,'Flag':Flag,})

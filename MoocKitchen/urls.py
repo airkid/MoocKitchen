@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^user', views.member),
     url(r'^test/([0-9]+)/([0-9]+)/([0-9]+)$', views.take_test),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^download/', views.get_file),
+    url(r'^get_file/$', views.get_file),
+    url(r'^download/$', views.download),
     url(r'^ttt$', views.ttt),
     url(r'^change_pass$', views.change_pass),
     url(r'^change_info$', views.change_info),
@@ -39,4 +40,6 @@ urlpatterns = [
     url(r'^keepnote/$', views.keepnote),
     url(r'^get_messages/$', views.get_messages),
     url(r'^set_likes/$', views.set_likes),
+    url(r'^get_course_class/', views.getCourseClass),
+    url(r'^search/$', views.search),
 ]

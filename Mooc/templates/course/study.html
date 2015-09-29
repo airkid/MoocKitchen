@@ -54,9 +54,87 @@
                     </div>
                     <!-- {% endif %} -->
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            <form class="navbar-form navbar-right" action="/search/" method="get">
+                <input id="search_text" name='search_text' type="text" class="form-control" placeholder="想看啥搜啥"
+                       onkeydown="get_search()"/>
+                <!--<input type="submit" value="搜索">-->
             </form>
+            <script type="text/javascript">
+                function get_search() {
+                    if (event.keyCode == 13) {
+                        var content = $("#search_text").val();
+                        window.location.href = "./search/?search_text=" + content;
+                    }
+                }
+                function get_course_class(contents) {
+                    var content_class = contents;
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {'content_class': content_class,},
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData);
+                        }
+                    })
+                }
+                $(document).ready(function () {
+                    $('#all').click(function () {
+                        var content_class = 'all';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#nature').click(function () {
+                        var content_class = 'nature';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#art').click(function () {
+                        var content_class = 'art';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#society').click(function () {
+                        var content_class = 'society';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#computer').click(function () {
+                        var content_class = 'computer';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                })
+            </script>
         </div>
         <!--/.nav-collapse -->
     </div>
@@ -97,10 +175,12 @@
                 </div>
             </div>
             <hr>
+            {% if section.quiz %}
             <div class="well well-lg intest" width="800">
               <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 今天的课程看完了？要不要来做个小quiz呢~（quiz成绩不计入本课程最后成绩哦~）
               <a class="btn btn-info" href="/quiz/{{ course.id }}/{{ section.unit.counter }}/{{ section.counter }}" role="button">点击进入测试</a>
             </div>
+            {% endif %}
         </div>
          <script id="script">
             //
@@ -108,7 +188,7 @@
             // header on that server.
             //
             //PDFJS.workerSrc = 'pdf.js';
-            var url = '../download/?url={{ section.pdf }}';
+            var url = '../get_file/?url={{ section.pdf }}';
 
 
             //
@@ -249,7 +329,8 @@
             </div>
             <!-- =================随堂笔记====================== -->
              <div id="mybj">
-                {% include './course/note.html' %}
+                <div id="mynote">{% include './course/note.html' %}</div>
+                 <input  id='note_submit'class="btn btn-info" type="button" value="保存">
             </div>
         </div>
     </div>
@@ -265,7 +346,7 @@
                             data:{'content':content,'course_id':course_id,'unit_cnt':unit_cnt},
                             success:function(responseData){
                                 alert('笔记保存成功')
-                                $('#mybj').html(responseData);
+                                $('#mynote').html(responseData);
                             }
                         })
                     })

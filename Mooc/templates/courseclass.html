@@ -1,0 +1,49 @@
+{% for course,num in courses_num %}
+    {% ifequal  num 0 %}
+        <div class="row">
+    {% endifequal %}
+<div class="col-xs-6 col-lg-4">
+    <img class="img-circle" src="{{ course.img }}" alt="Generic placeholder image" width="140" height="140">
+
+    <h2>{{ course.name }}</h2>
+
+    <div class="row"><p>{{ course.subTitle }}</p></div>
+    <p><a class="btn btn-default" href="/course/{{ course.id }}" role="button" target="_blank">查看详情 &raquo;</a></p>
+</div><!--/.col-xs-6.col-lg-4-->
+{% ifnotequal forloop.counter0 courses|length|add:-1 %}
+    {% ifequal  num 1 %}
+        </div><br>
+    {% endifequal %}
+{% endifnotequal %}
+    {% ifequal forloop.counter0 courses|length|add:-1 %}
+        </div><br>
+    {% endifequal %}
+{% endfor %}
+{% if Flag %}
+    <br>
+    <div class="center">
+        <a id="getmore" class="btn btn-default btn-lg" role="button">点击加载更多</a>
+    </div>
+    <br>
+{% endif %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#getmore').click(function () {
+            var content_text = '{{search_text}}'
+            var content_class = '{{courseclass}}'
+            var number = {{number}}
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {
+                            'content_text': content_text,
+                            'content_class': content_class,
+                            'number': number
+                        },
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData)
+                        }
+                    })
+        })
+    })
+</script>

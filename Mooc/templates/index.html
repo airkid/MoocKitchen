@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,262 +15,418 @@
 
     <script src="../static/js/ie-emulation-modes-warning.js"></script>
     <script src="../static/js/jquery/jquery.min.js"></script>
-    <script src="../static/js/index.js"></script>    
+    <script src="../static/js/index.js"></script>
     <script src="../static/js/index2.js"></script>
-  </head>
-  <body>
-  <!-- 导航栏
-  ================================================== -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
+    <script>
+        $(document).ready(function () {
+            alert("由于教学资源不足，我们建议您选择‘Java语言程序设计’这门课程来体验本网站的全部功能，敬请谅解。");
+        });
+    </script>
+</head>
+<body>
+<!-- 导航栏
+================================================== -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li id="showkc"><a href="#">课程</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <!-- {% if user %} -->
-                <p class="navbar-collapse navbar-text  navbar-right">Welcome,
-                    <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
-                    <a href="/logout" class="navbar-link bg-danger">Exit</a>
-                </p>
-                <!-- {% else %} -->
-                <div class="navbar-collapse navbar-right">
-                    <a href="/login"><button class="btn btn-primary navbar-btn">Sign in</button></a>
-                    <a href="/register"><button class="btn btn-default navbar-btn">Register</button></a>
-                </div>
-                <!-- {% endif %} -->
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="想看啥搜啥">
-          </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+            <ul class="nav navbar-nav">
+                <li id="showkc"><a href="#">课程</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- {% if user %} -->
+                    <p class="navbar-collapse navbar-text  navbar-right">Welcome,
+                        <a href="/user/{{ user.id }}" class="navbar-link bg-info">{{ userinfo.nickname }}</a>
+                        <a href="/logout" class="navbar-link bg-danger">Exit</a>
+                    </p>
+                    <!-- {% else %} -->
+                    <div class="navbar-collapse navbar-right">
+                        <a href="/login">
+                            <button class="btn btn-primary navbar-btn">Sign in</button>
+                        </a>
+                        <a href="/register">
+                            <button class="btn btn-default navbar-btn">Register</button>
+                        </a>
+                    </div>
+                    <!-- {% endif %} -->
+            </ul>
+            <form class="navbar-form navbar-right" action="/search/" method="get">
+                <input id="search_text" name='search_text' type="text" class="form-control" placeholder="想看啥搜啥"
+                       onkeydown="get_search()"/>
+                <!--<input type="submit" value="搜索">-->
+            </form>
+            <script type="text/javascript">
+                function get_search() {
+                    if (event.keyCode == 13) {
+                        var content = $("#search_text").val();
+                        window.location.href = "./search/?search_text=" + content;
+                    }
+                }
+                function get_course_class(contents) {
+                    var content_class = contents;
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {'content_class': content_class,},
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData);
+                        }
+                    })
+                }
+                $(document).ready(function () {
+                    $('#all').click(function () {
+                        var content_class = 'all';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#nature').click(function () {
+                        var content_class = 'nature';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#art').click(function () {
+                        var content_class = 'art';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#society').click(function () {
+                        var content_class = 'society';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#computer').click(function () {
+                        var content_class = 'computer';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                })
+            </script>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
 
-  <!-- 主体部分
-  ==========================================================-->
-    <!-- HOME
-    ========================================================== -->
-    <div id="home">
-      <!-- 幻灯片
-      ================================================== -->
-      <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+<!-- 主体部分
+==========================================================-->
+<!-- HOME
+========================================================== -->
+<div id="home">
+    <!-- 幻灯片
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel" data-slide-to="1"></li>
-          <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
         </ol>
         <div class="carousel-inner" role="listbox">
-          <div class="item active">
-            <img class="first-slide" src="../static/img/FZKT.png" alt="First slide">
+            {% for item,str in courses_like %}
+                {% ifequal forloop.counter 1 %}
+                    <div class="item active">
+                {% else %}
+                    <div class="item">
+                {% endifequal %}
+            <!--修改为服务器推荐图片-->
+            <img class="{{ str }}-slide"
+                 src="http://moockitchen-mooc.stor.sinaapp.com/img/course_recommend/{{ item.id }}"
+                 alt="{{ str|capfirst }} slide">
+            <!--<img class="{{str}}-slide" src="../static/img/K{{forloop.counter}}.png" alt="{{str|capfirst}} slide">-->
             <div class="container">
-              <div class="carousel-caption">
-                <h1>翻转课堂</h1>
-                <p>创新思维教学法 · 等你来翻转课堂</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">点击进入</a></p>
-              </div>
+                <div class="carousel-caption">
+                    <h1>{{ item.name }}</h1>
+
+                    <p>{{ item.subTitle }}</p>
+
+                    <p><a class="btn btn-lg btn-primary" href="/course/{{ item.id }}" role="button">点击进入</a></p>
+                </div>
             </div>
-          </div>
-          <div class="item">
-            <img class="second-slide" src="../static/img/K2.png" alt="Second slide">
-            <div class="container">
-              <div class="carousel-caption">
-                <h1>商务英语口语</h1>
-                <p>拒接哑巴英语，30天课程，学一口流利的口语</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">查看详情</a></p>
-              </div>
             </div>
-          </div>
-          <div class="item">
-            <img class="third-slide" src="../static/img/K3.png" alt="Third slide">
-            <div class="container">
-              <div class="carousel-caption">
-                <h1>西方经济学</h1>
-                <p>资本主义下的经济原理理论</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">我要学习</a></p>
-              </div>
+            {% endfor %}
             </div>
-          </div>
+
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div><!-- end幻灯片 -->
-      <!-- 特色&课程
-      ================================================== -->
-      <div class="container marketing">
-        <!-- ============圆圈=============== -->
-        <div class="feature-enc section-divider clearfix">
-          <h2 class="main-title text-center" data-sr='enter bottom'>欢迎来到KitchenAir</h2>
-          <h4 class="sub-title text-center" data-sr='enter bottom'>注册登陆 &rarr; 选择课程时间 &rarr; 学习测试 &rarr; 完成课程</h4>
+        <!-- end幻灯片 -->
+        <!-- 特色&课程
+        ================================================== -->
+        <div class="container marketing">
+            <!-- ============圆圈=============== -->
+            <div class="feature-enc section-divider clearfix">
+                <h2 class="main-title text-center" data-sr='enter bottom'>欢迎来到KitchenAir</h2>
+                <h4 class="sub-title text-center" data-sr='enter bottom'>注册登陆 &rarr; 选择课程时间 &rarr; 学习测试 &rarr; 完成课程</h4>
 
-          <div class="feature-row-1 text-center" data-sr='over 0.4s, move 50px'>
-            <div class="sep-feature-sec">
-              <div class="feature-circle market">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title market">资源免费下载</h4>
-              <p class="feature-exp">所有的视频以及课程PDF均可免费下载</p>
+                <div class="feature-row-1 text-center" data-sr='over 0.4s, move 50px'>
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle market">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title market">资源免费下载</h4>
+
+                        <p class="feature-exp">所有的视频以及课程PDF均可免费下载</p>
+                    </div>
+
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle product">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title product">同步在线PDF</h4>
+
+                        <p class="feature-exp">我们设置了与课程同步的PDF，视频电子书随意切换</p>
+                    </div>
+
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle customer">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title customer">随堂笔记</h4>
+
+                        <p class="feature-exp">边看视频边做课堂笔记，便捷又高效</p>
+                    </div>
+                </div>
+
+                <div class="feature-row-2 text-center" data-sr='over 0.4s, move 50px,spin 45deg'>
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle competition">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title competition">在线课后练习</h4>
+
+                        <p class="feature-exp">每课配备相应课堂练习与测试，在线答题，保存试题，随时复习</p>
+                    </div>
+
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle pricing">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title pricing">灵活课程时间</h4>
+
+                        <p class="feature-exp">每课均有多个开课时间可供选择，自由选取时间</p>
+                    </div>
+
+                    <div class="sep-feature-sec">
+                        <div class="feature-circle delivery">
+                            <p class="feature-img"></p>
+                        </div>
+                        <h4 class="feature-title delivery">交流与讨论</h4>
+
+                        <p class="feature-exp">讨论区里与其他同学交流讨论</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ============图=============== -->
+            <div class="intro-main-enc section-divider clearfix">
+                <div class="pull-left intro-content-sec">
+                    <h3 class="intro-title">我们只专注MOOC</h3>
+
+                    <p class="intro-explain">KitchenAir只做<strong>最专注的MOOC</strong>平台。在这里，我们只专注开发一切能有助于您学习的功能，不随意添加不必要的辅助功能，让你更专注于课程本身。
+                    </p>
+                </div>
+                <div class="pull-right intro-screenshot-sec">
+                    <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
+                        <img alt="Clarity" class="clarity-img"
+                             src="https://d2x1aimke44h.cloudfront.net/assets/home-images/clarity-aae26fc55ff2fc198e8f80e29ea7a43b.png"/>
+                    </div>
+                </div>
             </div>
 
-            <div class="sep-feature-sec">
-              <div class="feature-circle product">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title product">同步在线PDF</h4>
-              <p class="feature-exp">我们设置了与课程同步的PDF，视频电子书随意切换</p>
+            <div class="intro-main-enc section-divider clearfix">
+                <div class="pull-right intro-content-sec time-c-sec">
+                    <h3 class="intro-title">做最好的用户体验</h3>
+
+                    <p class="intro-explain">KitchenAir的前端设计师们致力于开发出<strong>更美观流畅的用户界面</strong>，我们的目标是：更简洁漂亮的界面、更完善具体的功能，让您在学习课程的过程中保持一份美好心情。
+                    </p>
+                </div>
+                <div class="pull-left intro-screenshot-sec time-ss-sec">
+                    <div class="screeenshot" data-sr="enter left, over 0.6s, move 150px">
+                        <img alt="Time" class="time-img"
+                             src="https://d2x1aimke44h.cloudfront.net/assets/home-images/time-ffabc10b7b222ddc2ed9867dfe5effe0.png"/>
+                    </div>
+                </div>
             </div>
 
-            <div class="sep-feature-sec">
-              <div class="feature-circle customer">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title customer">随堂笔记</h4>
-              <p class="feature-exp">边看视频边做课堂笔记，便捷又高效</p>
-            </div>
-          </div>
+            <div class="intro-main-enc section-divider clearfix">
+                <div class="pull-left intro-content-sec">
+                    <h3 class="intro-title">我们仍在努力</h3>
 
-          <div class="feature-row-2 text-center" data-sr='over 0.4s, move 50px,spin 45deg'>
-            <div class="sep-feature-sec">
-              <div class="feature-circle competition">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title competition">在线课后练习</h4>
-              <p class="feature-exp">每课配备相应课堂练习与测试，在线答题，保存试题，随时复习</p>
+                    <p class="intro-explain"><strong class="mini-title">感谢您选择<strong>KitchenAir</strong>。</strong>我们知道有很多团队在开发MOOC并且做的都很好，非常感谢您选择了<strong>我们团队的MOOC</strong>，我们仍在不停努力，为了用户们更好的体验，无论是我们的前端设计师还是后台工程师都将为打造给您带来更好体验的MOOC而<strong>不断努力</strong>，希望您继续支持我们！<br><br><strong>让我们一起加油！:)</strong>
+                    </p>
+                </div>
+                <div class="pull-right intro-screenshot-sec">
+                    <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
+                        <img alt="Money" class="money-img"
+                             src="https://d2x1aimke44h.cloudfront.net/assets/home-images/money-c4d666521fce31af9647b2610dae601b.png"/>
+                    </div>
+                </div>
             </div>
-
-            <div class="sep-feature-sec">
-              <div class="feature-circle pricing">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title pricing">灵活课程时间</h4>
-              <p class="feature-exp">每课均有多个开课时间可供选择，自由选取时间</p>
-            </div>
-
-            <div class="sep-feature-sec">
-              <div class="feature-circle delivery">
-                <p class="feature-img"></p>
-              </div>
-              <h4 class="feature-title delivery">交流与讨论</h4>
-              <p class="feature-exp">讨论区里与其他同学交流讨论</p>
-            </div>
-          </div>
         </div>
-        <!-- ============图=============== -->
-        <div class="intro-main-enc section-divider clearfix">
-          <div class="pull-left intro-content-sec">
-            <h3 class="intro-title">我们只专注MOOC</h3>
-            <p class="intro-explain">KitchenAir只做<strong>最专注的MOOC</strong>平台。在这里，我们只专注开发一切能有助于您学习的功能，不随意添加不必要的辅助功能，让你更专注于课程本身。</p>
-          </div>
-          <div class="pull-right intro-screenshot-sec">
-            <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
-              <img alt="Clarity" class="clarity-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/clarity-aae26fc55ff2fc198e8f80e29ea7a43b.png" />
-            </div>
-          </div>
-        </div>
-
-        <div class="intro-main-enc section-divider clearfix">
-          <div class="pull-right intro-content-sec time-c-sec">
-            <h3 class="intro-title">做最好的用户体验</h3>
-            <p class="intro-explain">KitchenAir的前端设计师们致力于开发出<strong>更美观流畅的用户界面</strong>，我们的目标是：更简洁漂亮的界面、更完善具体的功能，让您在学习课程的过程中保持一份美好心情。</p>
-          </div>
-          <div class="pull-left intro-screenshot-sec time-ss-sec">
-            <div class="screeenshot" data-sr="enter left, over 0.6s, move 150px">
-              <img alt="Time" class="time-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/time-ffabc10b7b222ddc2ed9867dfe5effe0.png" />
-            </div>
-          </div>
-        </div>
-
-        <div class="intro-main-enc section-divider clearfix">
-          <div class="pull-left intro-content-sec">
-            <h3 class="intro-title">我们仍在努力</h3>
-            <p class="intro-explain"><strong class="mini-title">感谢您选择<strong>KitchenAir</strong>。</strong>我们知道有很多团队在开发MOOC并且做的都很好，非常感谢您选择了<strong>我们团队的MOOC</strong>，我们仍在不停努力，为了用户们更好的体验，无论是我们的前端设计师还是后台工程师都将为打造给您带来更好体验的MOOC而<strong>不断努力</strong>，希望您继续支持我们！<br><br><strong>让我们一起加油！:)</strong></p>
-          </div>
-          <div class="pull-right intro-screenshot-sec">
-            <div class="screeenshot" data-sr="enter right, over 0.6s, move 150px">
-              <img alt="Money" class="money-img" src="https://d2x1aimke44h.cloudfront.net/assets/home-images/money-c4d666521fce31af9647b2610dae601b.png" />
-            </div>
-          </div>
-        </div>
-        
-
-      </div><!-- end/.container -->
-    </div><!-- end/home -->
+        <!-- end/.container -->
+    </div>
+    <!-- end/home -->
 
     <!-- 课程
     ========================================================== -->
     <div class="container" id="kc">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <!-- 左侧 -->
-        <div class="col-xs-12 col-sm-9">
-          <div class="jumbotron">
-            <h1>欢迎同学们</h1>
-            <p>这里是Kitchen Air为您提供的MOOC课程，根据您的喜好选择吧~</p>
-          </div>
-          <div class="row">
-          {% for course in courses %}
-            <div class="col-xs-6 col-lg-4">
-              <img class="img-circle" src="{{ course.img }}" alt="Generic placeholder image" width="140" height="140">
-              <h2>{{ course.name }}</h2>
-              <p>{{ course.subTitle }}</p>
-              <p><a class="btn btn-default" href="/course/{{ course.id }}" role="button">查看详情 &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-          {% endfor %}  
-          </div><!--end课程列表-->
-          <br>
-          <!-- 分页 -->
-          <nav>
-            <ul class="pager">
-              <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> 上一页</a></li>              
-              <li><a href="#">1 <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">3 <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">4 <span class="sr-only">(current)</span></a></li>              
-              <li class="next"><a href="#">下一页 <span aria-hidden="true">&rarr;</span></a></li>
-            </ul>
-          </nav><!--end分页-->
-        </div><!--end左侧-->
+        <div class="row row-offcanvas row-offcanvas-right">
+            <!-- 左侧 -->
+            <div class="col-xs-12 col-sm-9">
+                <div class="jumbotron">
+                    <h1>欢迎同学们</h1>
 
-        <!-- 右侧 -->      
-        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-          <div class="list-group">
-            <a href="#" class="list-group-item active">全部课程</a>
-            <a href="#" class="list-group-item">自然科学</a>
-            <a href="#" class="list-group-item">人文艺术</a>
-            <a href="#" class="list-group-item">社会生活</a>
-            <a href="#" class="list-group-item">计算机科学</a>
-          </div>
-        </div><!--end右侧-->
-      </div>
-      <hr class="featurette-divider">
-    </div><!--end课程-->
-    
-  <!-- FOOT
-  =========================================================== -->
+                    <p>这里是Kitchen Air为您提供的MOOC课程，根据您的喜好选择吧~</p>
+                </div>
+                <div id='showcourse' class="row">
+                    {% include 'courseclass.html' %}
+                </div>
+                <br>
+            </div>
+            <!--end左侧-->
+
+            <!-- 右侧 -->
+            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+                <div class="list-group">
+                    <a id='all' href="javascript:void(0)" class="list-group-item active">全部课程</a>
+                    <a id='nature' href="javascript:void(0)" class="list-group-item">自然科学</a>
+                    <a id='art' href="javascript:void(0)" class="list-group-item">人文艺术</a>
+                    <a id='society' href="javascript:void(0)" class="list-group-item">社会生活</a>
+                    <a id='computer' href="javascript:void(0)" class="list-group-item">计算机科学</a>
+                </div>
+
+            </div>
+            <!--end右侧-->
+            <script type="text/javascript">
+                function get_course_class(contents) {
+                    var content = contents;
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {'content': content},
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData);
+                        }
+                    })
+                }
+                $(document).ready(function () {
+                    $('#all').click(function () {
+                        var content = 'all';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content': content},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#nature').click(function () {
+                        var content = 'nature';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content': content},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#art').click(function () {
+                        var content = 'art';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content': content},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#society').click(function () {
+                        var content = 'society';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content': content},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#computer').click(function () {
+                        var content = 'computer';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content': content},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                })
+            </script>
+        </div>
+        <hr class="featurette-divider">
+    </div>
+    <!--end课程
+
+      <!-- FOOT
+      =========================================================== -->
     <footer class="container marketing">
-      <p class="pull-right"><a href="#">顶~飞回顶部~</a></p>
-      <p>&copy; 2015 Kitchen Air &middot; <a href="#">友情链接</a> &middot; <a href="#">关于我们</a></p>
+        <p class="pull-right"><a href="#">顶~飞回顶部~</a></p>
+
+        <p>&copy; 2015 Kitchen Air &middot; <a href="#">友情链接</a> &middot; <a href="#">关于我们</a></p>
     </footer>
-    
-  <!-- script
-  =========================================================== -->   
+
+    <!-- script
+    =========================================================== -->
     <script src="../static/js/bootstrap.min.js"></script>
-    <script src="../static/js/holder.min.js"></script> 
+    <script src="../static/js/holder.min.js"></script>
     <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
+</body>
 </html>

@@ -54,6 +54,9 @@ $(document).ready(function () {
     $('#change_pass_form').ajaxForm(
         function (data, status) {
             alert(data['message']);
+            $('#blank3').val("");
+            $('#blank4').val("");
+            $('#blank5').val("");
         });
 });
 

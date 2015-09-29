@@ -21,11 +21,12 @@ class Course(models.Model):
     name = models.CharField(max_length=30)
     subTitle = models.CharField(max_length=30, default="")
     # 课程简介
-    summary = models.CharField(max_length=200)
+    summary = models.CharField(max_length=500)
     announcement = models.CharField(max_length=200, blank=True, default=u'暂无公告')
     img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/course/default')
     teacher = models.CharField(max_length=20, default='NoTeacher')
     likeCounter = models.IntegerField(default=0)
+    courseClass = models.CharField(choices=(('nature',u'自然科学'),('art', u'人文艺术'), ('society', u'社会生活'), ('computer', u'计算机科学')), max_length=15,blank=True)
 
     def __unicode__(self):
         return self.name
@@ -87,19 +88,19 @@ class Unit(models.Model):
 class QuizQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, related_name='questions')
     title = models.CharField(max_length=100, blank=True)
-    option_a = models.CharField(max_length=10, default='A')
+    option_a = models.CharField(max_length=50, default='A')
     image_a = models.CharField(blank=True, max_length=100, null=True)
-    option_b = models.CharField(max_length=10, default='B')
+    option_b = models.CharField(max_length=50, default='B')
     image_b = models.CharField(blank=True, max_length=100, null=True)
-    option_c = models.CharField(max_length=10, default='C')
+    option_c = models.CharField(max_length=50, default='C')
     image_c = models.CharField(blank=True, max_length=100, null=True)
-    option_d = models.CharField(max_length=10, default='D')
+    option_d = models.CharField(max_length=50, default='D')
     image_d = models.CharField(blank=True, max_length=100, null=True)
     answer = models.CharField(max_length=30)
     counter = models.IntegerField()
     image = models.CharField(blank=True, max_length=100, null=True)
     # 用于临时存储答案
-    user_answer = models.CharField(max_length=10, blank=True)
+    user_answer = models.CharField(max_length=50, blank=True)
     question_score = models.IntegerField(default=5, blank=True)
     #判断 2 表示题型为简答题，1 表示题型为选择题,0表示判断
     question_type = models.CharField(choices=(('0', u'判断题'), ('1', u'选择题'), ('2', u'简答题')), max_length=10)
@@ -166,7 +167,8 @@ class Message(models.Model):
     publishTime = models.DateField(null=True, blank=True)
 
     def __unicode__(self):
-        return 'Message '+str(self.id)+' :'+str(self.content)
+        #return ('Message '+str(self.id).encode('utf-8')+' :'+str(self.content).encode('utf-8')).encode('utf-8')
+        return str(self.id).encode('utf-8')
 
     class META:
         ordering = ['floor']

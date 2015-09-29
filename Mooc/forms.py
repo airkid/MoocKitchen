@@ -12,7 +12,7 @@ class LoginForm(forms.Form):
         username = self.cleaned_data.get('username')
         if username is None:
             raise forms.ValidationError(u'用户名不能为空')
-        elif len(username)<=6:
+        elif len(username) <= 5:
             raise forms.ValidationError(u'长度不能小于6')
         # 中间还有很多elif...
         else:

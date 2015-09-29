@@ -25,7 +25,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#" id="showhome">KitchenAir.MOOC</a>
+            <a class="navbar-brand" href="/" id="showhome">KitchenAir.MOOC</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -48,12 +48,87 @@
                     </div>
                 {% endif %}
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="想看啥搜啥">
-                <a href="<%= ??? %>">
-                    <button class="btn btn-primary navbar-btn">搜索</button>
-                </a>
+            <form class="navbar-form navbar-right" action="/search/" method="get">
+                <input id="search_text" name='search_text' type="text" class="form-control" placeholder="想看啥搜啥"
+                       onkeydown="get_search()"/>
+                <!--<input type="submit" value="搜索">-->
             </form>
+            <script type="text/javascript">
+                function get_search() {
+                    if (event.keyCode == 13) {
+                        var content = $("#search_text").val();
+                        window.location.href = "./search/?search_text=" + content;
+                    }
+                }
+                function get_course_class(contents) {
+                    var content_class = contents;
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {'content_class': content_class,},
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData);
+                        }
+                    })
+                }
+                $(document).ready(function () {
+                    $('#all').click(function () {
+                        var content_class = 'all';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#nature').click(function () {
+                        var content_class = 'nature';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#art').click(function () {
+                        var content_class = 'art';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#society').click(function () {
+                        var content_class = 'society';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#computer').click(function () {
+                        var content_class = 'computer';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                })
+            </script>
         </div>
         <!--/.nav-collapse -->
     </div>
@@ -79,41 +154,42 @@
                     {% endif %}
                     {% ifequal question.question_type '0' %}
                         <div class="row quiz">
-                            <div class="col-xs-2"></div>
-                            <div class="col-xs-2">
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">
                                 <div class="radio">
                                     <label>
                                         <input type="radio" value="T" name="judge{{ forloop.counter0 }}" {% if Answer %}
                                                disabled {% endif %}
-                                                {% ifequal question.user_answer 'T' %} checked {% endifequal %}>T <br/>
+                                                {% ifequal question.user_answer 'T' %} checked {% endifequal %}>True <br/>
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xs-2">
+                        </div>
+                        <div class="row quiz">
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">
                                 <div class="radio">
                                     <label>
                                         <input type="radio" value="F" name="judge{{ forloop.counter0 }}" {% if Answer %}
                                                disabled {% endif %}
-                                                {% ifequal question.user_answer 'F' %} checked {% endifequal %}>F <br/>
+                                                {% ifequal question.user_answer 'F' %} checked {% endifequal %}>False <br/>
                                     </label>
                                 </div>
                             </div>
+                        </div>
                             {% if Answer %}
-                                <div class="col-xs-2">
-                                    The right answer is {{ question.answer }}.Your answer is {{ question.user_answer }}
-                                    {% ifequal question.user_answer question.answer %}
-                                        You are right
-                                    {% else %}
-                                        You are wrong
-                                    {% endifequal %}
+                                <div class="row quiz">
+                                        <h5><font color="green">
+                                正确答案是 <font color="blue">{{ question.answer }}</font>.你的答案是{{ question.user_answer }}.
+                                {% ifequal question.user_answer question.answer %}你是正确的{% else %}你是错误的{% endifequal %}
+                                        </font></h5>
                                 </div>
                             {% endif %}
-                        </div>
                     {% else %}
                         {% ifequal question.question_type '1' %}
                             <div class="row quiz">
-                                <div class="col-xs-2"></div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-1"></div>
+                                <div class="col-xs-10">
                                     <div class="radio">
                                         <label>
                                             <input type="radio" value="A" name="option{{ forloop.counter0 }}"
@@ -121,11 +197,16 @@
                                                    disabled {% endif %}
                                                     {% ifequal question.user_answer 'A' %}
                                                    checked {% endifequal %}>A.{{ question.option_a }}
-                                        <img src="{{ question.image_a }}" alt="A" width="138" height="30">
+                                            {% if question.image_a%}
+                                            <img src="{{ question.image_a }}" alt="A" width="138" height="30">
+                                            {% endif %}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                            </div>
+                            <div class="row quiz">
+                                <div class="col-xs-1"></div>
+                                <div class="col-xs-10">
                                     <div class="radio">
                                         <label>
                                             <input type="radio" value="B" name="option{{ forloop.counter0 }}"
@@ -133,11 +214,16 @@
                                                    disabled {% endif %}
                                                     {% ifequal question.user_answer 'B' %}
                                                    checked {% endifequal %}>B.{{ question.option_b }}
+                                            {% if question.image_b%}
                                         <img src="{{ question.image_b }}" alt="B" width="138" height="30">
+                                            {%endif%}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                            </div>
+                            <div class="row quiz">
+                                <div class="col-xs-1"></div>
+                                <div class="col-xs-10">
                                     <div class="radio">
                                         <label>
                                             <input type="radio" value="C" name="option{{ forloop.counter0 }}"
@@ -145,11 +231,16 @@
                                                    disabled {% endif %}
                                                     {% ifequal question.user_answer 'C' %}
                                                    checked {% endifequal %}>C.{{ question.option_c }}
+                                            {% if question.image_c%}
                                         <img src="{{ question.image_c }}" alt="B" width="138" height="30">
+                                            {%endif%}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                            </div>
+                            <div class="row quiz">
+                                <div class="col-xs-1"></div>
+                                <div class="col-xs-10">
                                     <div class="radio">
                                         <label>
                                             <input type="radio" value="D" name="option{{ forloop.counter0 }}"
@@ -157,22 +248,21 @@
                                                    disabled {% endif %}
                                                     {% ifequal question.user_answer 'D' %}
                                                    checked {% endifequal %}>D.{{ question.option_d }}
-                                        <img src="{{ question.image_d }}" alt="B" width="138" height="30">
+                                            {% if question.image_a%}
+                                            <img src="{{ question.image_d }}" alt="B" width="138" height="30">
+                                            {% endif %}
                                         </label>
                                     </div>
                                 </div>
-                                {% if Answer %}
-                                    <div class="col-xs-2">
-                                        The right answer is {{ question.answer }}.Your answer
-                                        is {{ question.user_answer }}
-                                        {% ifequal question.user_answer question.answer %}
-                                            You are right
-                                        {% else %}
-                                            You are wrong
-                                        {% endifequal %}
-                                    </div>
-                                {% endif %}
                             </div>
+                            {% if Answer %}
+                                <div class="row quiz">
+                                        <h5><font color="green">
+                                正确答案是 <font color="blue">{{ question.answer }}</font>.你的答案是{{ question.user_answer }}.
+                                {% ifequal question.user_answer question.answer %}你是正确的{% else %}你是错误的{% endifequal %}
+                                        </font></h5>
+                                </div>
+                            {% endif %}
                         {% endifequal %}
                     {% endifequal %}
                 </div>

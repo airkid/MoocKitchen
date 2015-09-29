@@ -52,9 +52,87 @@
                     </div>
                 {% endif %}
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="想看啥搜啥">
+            <form class="navbar-form navbar-right" action="/search/" method="get">
+                <input id="search_text" name='search_text' type="text" class="form-control" placeholder="想看啥搜啥"
+                       onkeydown="get_search()"/>
+                <!--<input type="submit" value="搜索">-->
             </form>
+            <script type="text/javascript">
+                function get_search() {
+                    if (event.keyCode == 13) {
+                        var content = $("#search_text").val();
+                        window.location.href = "./search/?search_text=" + content;
+                    }
+                }
+                function get_course_class(contents) {
+                    var content_class = contents;
+                    $.ajax({
+                        type: 'get',
+                        url: "/get_course_class/",
+                        data: {'content_class': content_class,},
+                        success: function (responseData) {
+                            $('#showcourse').html(responseData);
+                        }
+                    })
+                }
+                $(document).ready(function () {
+                    $('#all').click(function () {
+                        var content_class = 'all';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#nature').click(function () {
+                        var content_class = 'nature';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#art').click(function () {
+                        var content_class = 'art';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#society').click(function () {
+                        var content_class = 'society';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                    $('#computer').click(function () {
+                        var content_class = 'computer';
+                        $.ajax({
+                            type: 'get',
+                            url: "/get_course_class/",
+                            data: {'content_class': content_class,},
+                            success: function (responseData) {
+                                $('#showcourse').html(responseData);
+                            }
+                        })
+                    })
+                })
+            </script>
         </div>
         <!--/.nav-collapse -->
     </div>
@@ -188,11 +266,7 @@
     </div>
     <hr class="featurette-divider">
 </div>
-<!-- <label>{{ course.name }}</label><br>
-    <label>{{ course.summary }}</label><br>
-    {% for unit in units %}
-        <label>{{ unit.counter }}{{ unit.title }}</label><br>
-    {% endfor %} -->ç
+
 
 <!-- FOOT
 =========================================================== -->

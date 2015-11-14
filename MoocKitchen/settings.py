@@ -19,25 +19,25 @@ import os.path
 #import sae.const
 from os import environ
 debug = not environ.get("APP_NAME", "")
-if debug:
+# if debug:
 #LOCAL 本地调试用，便于导出数据库,根据本地MYSQL数据库填写下面参数<----------------如果文件中出现中文，一定要在开始添加 #coding:utf-8
-    MYSQL_DB = 'kitchen'
-    MYSQL_USER = 'kitchen'
-    MYSQL_PASS = 'kitchen'
-    MYSQL_HOST_M = '127.0.0.1'
-    MYSQL_HOST_S = '127.0.0.1'
-    MYSQL_PORT = '3306'
-else:
+MYSQL_DB = 'kitchen'
+MYSQL_USER = 'root'
+MYSQL_PASS = '..xiao'
+MYSQL_HOST_M = '127.0.0.1'
+MYSQL_HOST_S = '127.0.0.1'
+MYSQL_PORT = '3306'
+# else:
 #SAE
-    import sae.const
+    # import sae.const
     # from sae._restful_mysql import monkey
     # monkey.patch()
-    MYSQL_DB = sae.const.MYSQL_DB
-    MYSQL_USER = sae.const.MYSQL_USER
-    MYSQL_PASS = sae.const.MYSQL_PASS
-    MYSQL_HOST_M = sae.const.MYSQL_HOST
-    MYSQL_HOST_S = sae.const.MYSQL_HOST_S
-    MYSQL_PORT = sae.const.MYSQL_PORT
+    # MYSQL_DB = sae.const.MYSQL_DB
+    # MYSQL_USER = sae.const.MYSQL_USER
+    # MYSQL_PASS = sae.const.MYSQL_PASS
+    # MYSQL_HOST_M = sae.const.MYSQL_HOST
+    # MYSQL_HOST_S = sae.const.MYSQL_HOST_S
+    # MYSQL_PORT = sae.const.MYSQL_PORT
 
 DEFAULT_CHARSET = 'utf-8'
 # Quick-start development settings - unsuitable for production
@@ -47,7 +47,8 @@ DEFAULT_CHARSET = 'utf-8'
 SECRET_KEY = 'j25%%awr4-@25wn$34@owq$ht2fx$1q+ct^4-2m%mq7m$!#2xc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+
 
 ALLOWED_HOSTS = ['*',]
 
@@ -67,7 +68,7 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -136,3 +137,11 @@ LOGIN_URL = '/login/'
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 20971520
 FILE_UPLOAD_TEMP_DIR = '/s/mooc/tmp/'
+#---------------------------------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+#MEDIA_ROOT= os.path.join(BASE_DIR,'Mooc/static/files/CourseImg')
+MEDIA_ROOT = os.path.join(BASE_DIR,'Mooc/static')
+MEDIA_URL = '/files/'
+#---------------------------------------------------
+print(MEDIA_ROOT)
+print("Hello")

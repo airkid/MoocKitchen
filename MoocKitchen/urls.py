@@ -16,8 +16,8 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from Mooc import views
-
-
+from django.conf import settings
+import os
 urlpatterns = [
     url(r'^$', views.home),
     url(r'^register/$', views.register),
@@ -42,4 +42,7 @@ urlpatterns = [
     url(r'^set_likes/$', views.set_likes),
     url(r'^get_course_class/', views.getCourseClass),
     url(r'^search/$', views.search),
+    url(r'files/(?P<path>.*)', 'django.views.static.serve', {'document_root': os.path.join(settings.MEDIA_ROOT,'files')}),
+#    url(r'^CourseImg/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(settings.MEDIA_ROOT, "media"), 'show_indexes': True }),
 ]
+#urlpatterns += patterns('django.views.static',(r'CourseImg/(?P<path>.*)', 'serve', {'document_root': settings.MEDIA_ROOT}),)

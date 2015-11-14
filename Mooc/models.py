@@ -10,8 +10,8 @@ class UserInfo(models.Model):
     school = models.CharField(max_length=20, blank=True)
     birthday = models.DateField(blank=True, null=True)
     sex = models.CharField(choices=(('M', u'男'), ('F', u'女')), max_length=1, blank=True)
-    img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/user/default')
-
+    #img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/user/default')
+    img = models.FileField(upload_to='files/UserImg')
     def __unicode__(self):
         return self.nickname
 
@@ -23,7 +23,10 @@ class Course(models.Model):
     # 课程简介
     summary = models.CharField(max_length=500)
     announcement = models.CharField(max_length=200, blank=True, default=u'暂无公告')
-    img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/course/default')
+    #img = models.CharField(max_length=200, blank=True, default='http://moockitchen-mooc.stor.sinaapp.com/img/course/default')
+    #-----------------------------------------------
+    img = models.FileField(upload_to='files/CourseImg')
+    #-----------------------------------------------
     teacher = models.CharField(max_length=20, default='NoTeacher')
     likeCounter = models.IntegerField(default=0)
     courseClass = models.CharField(choices=(('nature',u'自然科学'),('art', u'人文艺术'), ('society', u'社会生活'), ('computer', u'计算机科学')), max_length=15,blank=True)
@@ -89,16 +92,21 @@ class QuizQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, related_name='questions')
     title = models.CharField(max_length=100, blank=True)
     option_a = models.CharField(max_length=50, default='A')
-    image_a = models.CharField(blank=True, max_length=100, null=True)
+    #image_a = models.CharField(blank=True, max_length=100, null=True)
+    image_a = models.FileField(upload_to='files/quizimg/ChooseImg')
     option_b = models.CharField(max_length=50, default='B')
-    image_b = models.CharField(blank=True, max_length=100, null=True)
+    image_b = models.FileField(upload_to='files/quizimg/ChooseImg')
+    #image_b = models.CharField(blank=True, max_length=100, null=True)
     option_c = models.CharField(max_length=50, default='C')
-    image_c = models.CharField(blank=True, max_length=100, null=True)
+    image_c = models.FileField(upload_to='files/quizimg/ChooseImg')
+    #image_c = models.CharField(blank=True, max_length=100, null=True)
     option_d = models.CharField(max_length=50, default='D')
-    image_d = models.CharField(blank=True, max_length=100, null=True)
+    image_d = models.FileField(upload_to='files/quizimg/ChooseImg')
+    #image_d = models.CharField(blank=True, max_length=100, null=True)
     answer = models.CharField(max_length=30)
     counter = models.IntegerField()
-    image = models.CharField(blank=True, max_length=100, null=True)
+    #image = models.CharField(blank=True, max_length=100, null=True)
+    image = models.FileField(upload_to='files/quizimg');
     # 用于临时存储答案
     user_answer = models.CharField(max_length=50, blank=True)
     question_score = models.IntegerField(default=5, blank=True)
@@ -117,8 +125,10 @@ class Section(models.Model):
     course = models.ForeignKey(Course, related_name='sections')
     unit = models.ForeignKey(Unit, related_name='sections')
     title = models.CharField(max_length=30)
-    video = models.CharField(blank=True, max_length=100, null=True)
+    #video = models.CharField(blank=True, max_length=100, null=True)
+    video = models.FileField(upload_to="files/video");
     pdf = models.CharField(blank=True, max_length=100, null=True)
+    #pdf = models.FileField();
     quiz = models.OneToOneField(Quiz, related_name='section', blank=True, null=True)
     counter = models.IntegerField()
     total_counter = models.IntegerField(default=0)
@@ -198,3 +208,4 @@ class LikeUserCourse(models.Model):
 
     def __unicode__(self):
         return str(self.user.info.nickname).decode('utf8')+str(self.course).decode('utf8')
+

@@ -15,6 +15,7 @@ from os import environ
 from django.http import JsonResponse
 from django.template import Context,loader
 from django.http import HttpResponse
+import os
 # Create your views here.
 STUDY_TIME_INF = 2999
 
@@ -44,10 +45,13 @@ def home(request):
     for i in range(0,len(courses)):
         if((i+1)%3 == 1):
             courses_num.append([courses[i],0])
+            print(courses[i].img)
         elif ((i+1)%3 == 2):
             courses_num.append([courses[i],-1])
+            print(courses[i].img)
         else:
             courses_num.append([courses[i],1])
+            print(courses[i].img)
     #推荐课程
     str = ['first','second','third']
     course_like = list(Course.objects.all().order_by('-likeCounter')[0:3])
@@ -248,6 +252,8 @@ def course_summary(request, cid):
         result = StudyStatus.objects.filter(course=course, user=request.user)
         course_begintime = course.cur_time.begin_time
         times = []
+        # 加上当前的开课日期
+        times.append(course.cur_time)
         for time in time_list:
             begin_time = time.begin_time
             if int((servertime-begin_time).days) <= int((course.units.all()[0]).gap_days) and int(begin_time.year) != STUDY_TIME_INF:
@@ -559,7 +565,7 @@ def take_quiz(request, course_id, unit_cnt, section_cnt):
     else:
         return HttpResponseRedirect('/')
 
-
+@csrf_exempt
 @login_required
 def take_test(request, course_id, unit_cnt, test_counter):
     # 当test_counter=0时，自动分配合适的test_counter

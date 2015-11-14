@@ -1,10 +1,10 @@
+{%load staticfiles%}
 {% for course,num in courses_num %}
     {% ifequal  num 0 %}
         <div class="row">
     {% endifequal %}
 <div class="col-xs-6 col-lg-4">
     <img class="img-circle" src="{{ course.img }}" alt="Generic placeholder image" width="140" height="140">
-
     <h2>{{ course.name }}</h2>
 
     <div class="row"><p>{{ course.subTitle }}</p></div>

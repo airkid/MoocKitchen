@@ -62,6 +62,7 @@ def home(request):
 
 
 def login(request):
+    print('login')
     # 第一次请求到get方法，返回页面
     if request.method == 'GET':
         # 匿名用户说明未登陆

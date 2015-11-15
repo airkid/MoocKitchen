@@ -2,14 +2,14 @@
 /Mooc/migrations
 site-packages
 /Mooc/static/admin
-/Mooc/static/css/bootstrap-theme.css.map
-/Mooc/static/css/bootstrap-theme.css
-/Mooc/static/css/bootstrap-theme.min.css
-/Mooc/static/css/bootstrap.css
-/Mooc/static/css/bootstrap.css.map
 /Mooc/static/files
 /Mooc/static/img
 /Mooc/static/js/bootstrap.js
 /Mooc/static/js/bootstrap.min.js
 /Mooc/static/js/jQuery/
+/Mooc/static/css/bootstrap-theme.css.map
+/Mooc/static/css/bootstrap-theme.css
+/Mooc/static/css/bootstrap-theme.min.css
+/Mooc/static/css/bootstrap.css
+/Mooc/static/css/bootstrap.css.map
 

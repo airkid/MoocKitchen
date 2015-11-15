@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
+from django.db import models, migrations
 from django.conf import settings
 
 
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('subTitle', models.CharField(default=b'', max_length=30)),
                 ('summary', models.CharField(max_length=500)),
                 ('announcement', models.CharField(default='\u6682\u65e0\u516c\u544a', max_length=200, blank=True)),
-                ('img', models.CharField(default=b'http://moockitchen-mooc.stor.sinaapp.com/img/course/default', max_length=200, blank=True)),
+                ('img', models.FileField(upload_to=b'files/CourseImg')),
                 ('teacher', models.CharField(default=b'NoTeacher', max_length=20)),
                 ('likeCounter', models.IntegerField(default=0)),
                 ('courseClass', models.CharField(blank=True, max_length=15, choices=[(b'nature', '\u81ea\u7136\u79d1\u5b66'), (b'art', '\u4eba\u6587\u827a\u672f'), (b'society', '\u793e\u4f1a\u751f\u6d3b'), (b'computer', '\u8ba1\u7b97\u673a\u79d1\u5b66')])),
@@ -66,16 +66,16 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=100, blank=True)),
                 ('option_a', models.CharField(default=b'A', max_length=50)),
-                ('image_a', models.CharField(max_length=100, null=True, blank=True)),
+                ('image_a', models.FileField(upload_to=b'files/quizimg/ChooseImg')),
                 ('option_b', models.CharField(default=b'B', max_length=50)),
-                ('image_b', models.CharField(max_length=100, null=True, blank=True)),
+                ('image_b', models.FileField(upload_to=b'files/quizimg/ChooseImg')),
                 ('option_c', models.CharField(default=b'C', max_length=50)),
-                ('image_c', models.CharField(max_length=100, null=True, blank=True)),
+                ('image_c', models.FileField(upload_to=b'files/quizimg/ChooseImg')),
                 ('option_d', models.CharField(default=b'D', max_length=50)),
-                ('image_d', models.CharField(max_length=100, null=True, blank=True)),
+                ('image_d', models.FileField(upload_to=b'files/quizimg/ChooseImg')),
                 ('answer', models.CharField(max_length=30)),
                 ('counter', models.IntegerField()),
-                ('image', models.CharField(max_length=100, null=True, blank=True)),
+                ('image', models.FileField(upload_to=b'files/quizimg')),
                 ('user_answer', models.CharField(max_length=50, blank=True)),
                 ('question_score', models.IntegerField(default=5, blank=True)),
                 ('question_type', models.CharField(max_length=10, choices=[(b'0', '\u5224\u65ad\u9898'), (b'1', '\u9009\u62e9\u9898'), (b'2', '\u7b80\u7b54\u9898')])),
@@ -98,7 +98,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=30)),
-                ('video', models.CharField(max_length=100, null=True, blank=True)),
+                ('video', models.FileField(upload_to=b'files/video')),
                 ('pdf', models.CharField(max_length=100, null=True, blank=True)),
                 ('counter', models.IntegerField()),
                 ('total_counter', models.IntegerField(default=0)),
@@ -158,7 +158,7 @@ class Migration(migrations.Migration):
                 ('school', models.CharField(max_length=20, blank=True)),
                 ('birthday', models.DateField(null=True, blank=True)),
                 ('sex', models.CharField(blank=True, max_length=1, choices=[(b'M', '\u7537'), (b'F', '\u5973')])),
-                ('img', models.CharField(default=b'http://moockitchen-mooc.stor.sinaapp.com/img/user/default', max_length=200, blank=True)),
+                ('img', models.FileField(upload_to=b'files/UserImg')),
             ],
         ),
         migrations.CreateModel(
